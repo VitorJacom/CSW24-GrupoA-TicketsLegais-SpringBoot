@@ -1,6 +1,5 @@
-package construcao_software.ingresso_back.persistence;
+package construcao_software.ingresso_back.domain.entities;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,13 +7,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class SampleEntity {
-    
-    @Column
+@NoArgsConstructor
+public class SampleDomain {
     private Long id;
-
-    @Column
     private String name;
+    private String description;
+
+     // Métodos de negócio podem ser adicionados aqui
 }
