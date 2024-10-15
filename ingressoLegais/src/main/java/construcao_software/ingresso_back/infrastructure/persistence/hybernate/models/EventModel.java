@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.infrastructure.persistence.entities;
+package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,27 +10,27 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "evento")
-public class Evento {
+@Table(name = "event")
+public class EventModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "evento_id")
-    private Long eventoId;
+    @Column(name = "event_id")
+    private Long eventId;
 
     @ManyToOne
     @JoinColumn(name = "tenant_id", nullable = false)
-    private Tenant tenant;
+    private TenantModel tenant;
 
     @Column(nullable = false)
-    private String nomeDoEvento;
+    private String eventName;
 
     @Column
-    private String tipo;
+    private String type;
 
     @Column
-    private String localizacao;
+    private String location;
 
     @Column
-    private LocalDateTime dataEHora;
+    private LocalDateTime dateTime;
 }

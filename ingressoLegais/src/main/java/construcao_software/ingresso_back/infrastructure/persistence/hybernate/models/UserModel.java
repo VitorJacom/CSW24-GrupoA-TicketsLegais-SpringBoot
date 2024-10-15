@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.infrastructure.persistence.entities;
+package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,8 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "usuario")
-public class Usuario {
+@Table(name = "user")
+public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +19,10 @@ public class Usuario {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id", nullable = false)
-    private Tenant tenant;
+    private TenantModel tenant;
 
     @Column(nullable = false)
-    private String nome;
+    private String name;
 
     @Column(nullable = false, unique = true)
     private String email;
@@ -31,6 +31,6 @@ public class Usuario {
     private String firebaseToken;
 
     @OneToOne
-    @JoinColumn(name = "configuracoes_de_privacidade_id")
-    private ConfiguracoesDePrivacidade configuracoesDePrivacidade;
+    @JoinColumn(name = "privacy_settings_id")
+    private PrivacySettingsModel privacySettings;
 }

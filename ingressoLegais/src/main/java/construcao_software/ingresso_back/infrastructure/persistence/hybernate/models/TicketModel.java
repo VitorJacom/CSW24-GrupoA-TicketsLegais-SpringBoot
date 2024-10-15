@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.infrastructure.persistence.entities;
+package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "ticket")
-public class Ticket {
+public class TicketModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,22 +18,22 @@ public class Ticket {
     private Long ticketId;
 
     @ManyToOne
-    @JoinColumn(name = "evento_id", nullable = false)
-    private Evento evento;
+    @JoinColumn(name = "event_id", nullable = false)
+    private EventModel event;
 
     @ManyToOne
     @JoinColumn(name = "tenant_id", nullable = false)
-    private Tenant tenant;
+    private TenantModel tenant;
 
     @Column(nullable = false)
-    private Double precoOriginal;
+    private Double originalPrice;
 
     @ManyToOne
-    @JoinColumn(name = "id_do_vendedor")
-    private Usuario vendedor;
+    @JoinColumn(name = "seller_id")
+    private UserModel seller;
 
     @Column(nullable = false, unique = true)
-    private String codigoUnicoDeVerificacao;
+    private String uniqueVerificationCode;
 
     @Column(nullable = false)
     private String status;
