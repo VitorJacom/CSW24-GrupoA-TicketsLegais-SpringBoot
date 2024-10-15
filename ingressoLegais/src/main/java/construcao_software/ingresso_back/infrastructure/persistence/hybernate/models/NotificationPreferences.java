@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.infrastructure.persistence.entities;
+package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "preferencias_de_notificacao")
-public class PreferenciasDeNotificacao {
+public class NotificationPreferences {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class PreferenciasDeNotificacao {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Usuario usuario;
+    private UserModel usuario;
 
     @Column(nullable = false)
     private boolean receberEmails;
