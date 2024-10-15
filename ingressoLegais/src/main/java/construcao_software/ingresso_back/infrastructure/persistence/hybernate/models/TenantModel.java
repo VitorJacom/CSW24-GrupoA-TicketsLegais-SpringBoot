@@ -1,10 +1,10 @@
-package construcao_software.ingresso_back.infrastructure.persistence.entities;
+package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,23 +14,20 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "sample_entity")
-public class SampleEntity {
-    
+@Table(name = "tenant")
+public class TenantModel {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column
-    private Long id;
+    @Column(name = "tenant_id")
+    private Long tenantId;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
     @Column
-    private String description;
+    private String contactInformation;
 
-    public SampleEntity(String name, String description){
-        this.name = name;
-        this.description = description;
-    }
-    
+    @Column
+    private String specificConfigurations;
 }

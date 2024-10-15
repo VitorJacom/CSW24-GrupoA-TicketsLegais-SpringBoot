@@ -1,8 +1,10 @@
-package construcao_software.ingresso_back.service;
+package construcao_software.ingresso_back.service.services;
 
-import construcao_software.ingresso_back.domain.entities.SampleDomain;
-import construcao_software.ingresso_back.infrastructure.persistence.entities.SampleEntity;
+import construcao_software.ingresso_back.domain.entities.SampleEntity;
+import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.SampleModel;
 import construcao_software.ingresso_back.infrastructure.persistence.repository.SampleJpaRepository;
+import construcao_software.ingresso_back.service.mappers.SampleMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,41 +14,44 @@ import java.util.stream.Collectors;
 @Service
 public class SampleService {
 
-    @Autowired
-    private SampleJpaRepository repository;
+    private final SampleJpaRepository repository;
+    private final SampleMapper mapper;
 
     @Autowired
-    private SampleMapper mapper;
+    public SampleService(SampleJpaRepository repository, SampleMapper mapper) {
+        this.repository = repository;
+        this.mapper = mapper;
+    }
 
     // Create
-    public SampleDomain createSample(SampleDomain domain) {
-        SampleEntity entity = mapper.toEntity(domain);
+    public SampleEntity createSample(SampleEntity domain) {
+        SampleModel entity = mapper.toEntity(domain);
         entity = repository.save(entity);
-        return mapper.toDomain(entity);
+        return mapper.toEntity(entity);
     }
 
     // Read (All)
-    public List<SampleDomain> getAllSamples() {
+    public List<SampleEntity> getAllSamples() {
         return repository.findAll().stream()
-                .map(mapper::toDomain)
+                .map(mapper::toEntity)
                 .collect(Collectors.toList());
     }
 
     // Read (By ID)
-    public SampleDomain getSampleById(Long id) {
+    public SampleEntity getSampleById(Long id) {
         return repository.findById(id)
-                .map(mapper::toDomain)
+                .map(mapper::toEntity)
                 .orElse(null);
     }
 
     // Update
-    public SampleDomain updateSample(Long id, SampleDomain domain) {
+    public SampleEntity updateSample(Long id, SampleEntity domain) {
         return repository.findById(id)
                 .map(entity -> {
                     entity.setName(domain.getName());
                     entity.setDescription(domain.getDescription());
-                    SampleEntity updated = repository.save(entity);
-                    return mapper.toDomain(updated);
+                    SampleModel updated = repository.save(entity);
+                    return mapper.toEntity(updated);
                 })
                 .orElse(null);
     }
