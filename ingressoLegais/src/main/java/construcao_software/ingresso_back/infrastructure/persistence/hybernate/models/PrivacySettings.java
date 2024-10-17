@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.infrastructure.persistence.entities;
+package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "configuracoes_de_privacidade")
-public class ConfiguracoesDePrivacidade {
+public class PrivacySettings {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class ConfiguracoesDePrivacidade {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private Usuario usuario;
+    private UserModel usuario;
 
     @Column(nullable = false)
     private boolean permitirCompartilhamentoDados;

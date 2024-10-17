@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.infrastructure.persistence.entities;
+package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "usuario")
-public class Usuario {
+public class UserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,7 +19,7 @@ public class Usuario {
 
     @ManyToOne
     @JoinColumn(name = "tenant_id", nullable = false)
-    private Tenant tenant;
+    private TenantModel tenant;
 
     @Column(nullable = false)
     private String nome;
@@ -32,5 +32,5 @@ public class Usuario {
 
     @OneToOne
     @JoinColumn(name = "configuracoes_de_privacidade_id")
-    private ConfiguracoesDePrivacidade configuracoesDePrivacidade;
+    private PrivacySettings configuracoesDePrivacidade;
 }
