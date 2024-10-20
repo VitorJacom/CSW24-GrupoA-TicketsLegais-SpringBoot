@@ -18,7 +18,7 @@ public class UserModel {
     private Long userId;
 
     @ManyToOne
-    @JoinColumn(name = "tenant_id", nullable = false)
+    @JoinColumn(name = "tenant_id")
     private TenantModel tenant;
 
     @Column(nullable = false)

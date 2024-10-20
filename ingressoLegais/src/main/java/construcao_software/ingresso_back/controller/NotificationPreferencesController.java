@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import construcao_software.ingresso_back.service.mappers.NotificationPreferencesMapper;
-import construcao_software.ingresso_back.service.services.NotificationPreferencesService;
+import construcao_software.ingresso_back.application.mappers.NotificationPreferencesMapper;
+import construcao_software.ingresso_back.application.services.NotificationPreferencesService;
 
 @RestController
 @RequestMapping("/api/notification-preferences")

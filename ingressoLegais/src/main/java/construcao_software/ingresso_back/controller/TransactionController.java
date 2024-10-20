@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import construcao_software.ingresso_back.service.dtos.TransactionDTO;
-import construcao_software.ingresso_back.service.mappers.TransactionMapper;
-import construcao_software.ingresso_back.service.services.TransactionService;
+import construcao_software.ingresso_back.application.dtos.TransactionDTO;
+import construcao_software.ingresso_back.application.mappers.TransactionMapper;
+import construcao_software.ingresso_back.application.services.TransactionService;
 
 @RestController
 @RequestMapping("/api/transactions")

@@ -1,8 +1,6 @@
 package construcao_software.ingresso_back.domain.entities;
 
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.EventModel;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TenantModel;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.UserModel;
+import construcao_software.ingresso_back.domain.base.TicketStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,11 +11,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TicketEntity {
+
     private Long ticketId;
-    private EventModel event;
-    private TenantModel tenant;
+    private EventEntity event;
+    private TenantEntity tenant;
+    private UserEntity seller;
     private Double originalPrice;
-    private UserModel seller;
     private String uniqueVerificationCode;
-    private String status;
+    private TicketStatus status;
 }
