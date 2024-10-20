@@ -4,12 +4,14 @@ import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.mappers.TicketMapper;
 import construcao_software.ingresso_back.domain.base.TicketStatus;
 import construcao_software.ingresso_back.domain.entities.TicketEntity;
+import construcao_software.ingresso_back.domain.entities.UserEntity;
 import construcao_software.ingresso_back.infrastructure.persistence.repository.TicketJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -43,5 +45,16 @@ public class TicketService {
         return repository.getAllBySeller_UserIdAndStatus(sellerId, status).stream()
                 .map(mapper::toEntity).map(mapper::toDTO)
                 .collect(Collectors.toList());
+    }
+
+    public Optional<TicketEntity> getTicketById(Long ticketId) {
+        return repository.findById(ticketId).map(mapper::toEntity);
+    }
+
+    public void processTicketSale(TicketEntity ticket, UserEntity user) {
+        ticket.setStatus(TicketStatus.SOLD);
+        ticket.setTenant(user.getTenant());
+
+        repository.save(mapper.toModel(ticket));
     }
 }

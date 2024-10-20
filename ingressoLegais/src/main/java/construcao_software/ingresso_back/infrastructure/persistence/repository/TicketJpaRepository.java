@@ -5,6 +5,7 @@ import construcao_software.ingresso_back.infrastructure.persistence.hybernate.mo
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,7 @@ public interface TicketJpaRepository extends JpaRepository<TicketModel, Long> {
 
     Optional<TicketModel> findByUniqueVerificationCode(String uniqueVerificationCode);
 
-    Optional<TicketModel> getAllBySeller_UserId(Long sellerId);
+    Collection<TicketModel> getAllBySeller_UserId(Long sellerId);
 
     Optional<TicketModel> getAllBySeller_UserIdAndStatus(Long seller_userId, TicketStatus status);
 }

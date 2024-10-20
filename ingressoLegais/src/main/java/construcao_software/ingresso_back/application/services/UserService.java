@@ -17,18 +17,19 @@ import java.util.stream.Collectors;
 public class UserService {
     
     private final UserJpaRepository repository;
-    private final UserMapper mapper;
+    private final UserMapper userMapper;
 
     private final TicketService ticketService;
+    private final TransactionService transactionService;
 
     public List<UserEntity> getAll() {
         return repository.findAll().stream()
-                .map(mapper::toEntity)
+                .map(userMapper::toEntity)
                 .collect(Collectors.toList());
     }
 
     public Optional<UserEntity> getUserByID(Long userID) {
-        return repository.findById(userID).map(mapper::toEntity);
+        return repository.findById(userID).map(userMapper::toEntity);
     }
 
     public Double getBalance(Long sellerId) {
