@@ -7,5 +7,6 @@ import construcao_software.ingresso_back.infrastructure.persistence.hybernate.mo
 
 @Repository
 public interface NotificationPreferencesJpaRepository extends JpaRepository<NotificationPreferencesModel, Long> {
-    
+
+    NotificationPreferencesModel findByUserId(Long userId);
 }

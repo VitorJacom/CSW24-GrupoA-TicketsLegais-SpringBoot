@@ -5,6 +5,9 @@ import org.springframework.stereotype.Service;
 
 import construcao_software.ingresso_back.infrastructure.persistence.repository.NotificationPreferencesJpaRepository;
 import construcao_software.ingresso_back.service.mappers.NotificationPreferencesMapper;
+import construcao_software.ingresso_back.domain.models.NotificationPreferences;
+import construcao_software.ingresso_back.service.dtos.NotificationPreferencesDTO;
+
 
 @Service
 public class NotificationPreferencesService {
@@ -17,4 +20,25 @@ public class NotificationPreferencesService {
         this.repository = repository;
         this.mapper = mapper;
     }
+
+    // GET by User
+    public NotificationPreferencesDTO getByUser(Long userId) {
+        NotificationPreferences preferences = repository.findByUserId(userId);
+        return mapper.toDto(preferences);
+    }
+
+    // PUT
+    public NotificationPreferencesDTO updatePreferences(Long userId, NotificationPreferencesDTO dto) {
+        NotificationPreferences preferences = repository.findByUserId(userId);
+        if (preferences != null) {
+            preferences.setEmailNotifications(dto.getEmailNotifications());
+            repository.save(preferences);
+        } else {
+            preferences = mapper.toEntity(dto);
+            preferences.setUserId(userId);
+            repository.save(preferences);
+        }
+        return mapper.toDto(preferences);
+    }
 }
+
