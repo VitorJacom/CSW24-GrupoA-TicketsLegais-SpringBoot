@@ -6,6 +6,7 @@ import construcao_software.ingresso_back.application.dtos.UserDTO;
 import construcao_software.ingresso_back.application.mappers.TicketMapper;
 import construcao_software.ingresso_back.application.mappers.TransactionMapper;
 import construcao_software.ingresso_back.application.mappers.UserMapper;
+import construcao_software.ingresso_back.domain.entities.PrivacySettingsEntity;
 import construcao_software.ingresso_back.domain.entities.TenantEntity;
 import construcao_software.ingresso_back.domain.entities.TicketEntity;
 import construcao_software.ingresso_back.domain.entities.TransactionEntity;
@@ -30,6 +31,10 @@ public class TransactionService {
         private UserMapper userMapper;
         @Autowired
         private TicketMapper ticketMapper;
+        @Autowired
+        private EmailService emailService;
+        @Autowired
+        private PrivacySettingsService privacySettingsService;
     
         
         public List<TransactionEntity> getAllTransactions() {
@@ -43,14 +48,38 @@ public class TransactionService {
         TicketEntity ticketEntity = ticketMapper.toEntity(ticketDTO);
         UserEntity buyerEntity = userMapper.toEntity(buyerDTO);
 
-        //TODO: Mockar a transacao
-        //TODO: fazer a verificacao se o tenent existe
-        TenantEntity tenantEntity = buyerEntity.getTenant();
+        // Verificar configurações de privacidade
+        PrivacySettingsEntity privacySettings = privacySettingsService.getSettingsByUser(buyerEntity.getUserId());
 
-        TransactionEntity transaction = new TransactionEntity(ticketEntity, buyerEntity, tenantEntity,ticketEntity.getOriginalPrice(),TransactionStatus.COMPLETED);
+        if (privacySettings != null && !privacySettings.isTransactionHistoryVisibility()) {
+            throw new RuntimeException("Usuário não permite o compartilhamento de histórico de transações");
+        }
+
+        // Mock de pagamento
+        boolean paymentSuccess = mockPaymentProcess();
+        if (!paymentSuccess) {
+            throw new RuntimeException("Falha no processamento do pagamento");
+        }
+
+        // Criar transação
+        TransactionEntity transaction = new TransactionEntity(
+                ticketEntity, buyerEntity, buyerEntity.getTenant(),
+                ticketEntity.getOriginalPrice(), TransactionStatus.COMPLETED
+        );
 
         TransactionModel transactionModel = repository.save(mapper.toModel(transaction));
 
+        // Mock: Enviar e-mail se permitido
+        if (privacySettings != null && privacySettings.isAllowMarketingCommunications()) {
+            emailService.sendPurchaseConfirmation(buyerDTO.getEmail(), transactionModel);
+        }
+
         return mapper.toDTO(transactionModel);
     }
+
+    //TODO: MOCK
+    private boolean mockPaymentProcess() {
+        return true;
+    }
+
 }
