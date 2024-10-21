@@ -1,6 +1,5 @@
-package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
+package construcao_software.ingresso_back.infrastructure.persistence.entities;
 
-import construcao_software.ingresso_back.domain.base.TicketStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Table(name = "ticket")
-public class TicketModel {
+public class Ticket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,23 +18,23 @@ public class TicketModel {
     private Long ticketId;
 
     @ManyToOne
-    @JoinColumn(name = "event_id", nullable = false)
-    private EventModel event;
+    @JoinColumn(name = "evento_id", nullable = false)
+    private Evento evento;
 
     @ManyToOne
     @JoinColumn(name = "tenant_id", nullable = false)
-    private TenantModel tenant;
+    private Tenant tenant;
 
     @Column(nullable = false)
-    private Double originalPrice;
+    private Double precoOriginal;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")
-    private UserModel seller;
+    @JoinColumn(name = "id_do_vendedor")
+    private Usuario vendedor;
 
     @Column(nullable = false, unique = true)
-    private String uniqueVerificationCode;
+    private String codigoUnicoDeVerificacao;
 
     @Column(nullable = false)
-    private TicketStatus status;
+    private String status;
 }

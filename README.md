@@ -41,7 +41,7 @@ O conjunto de casos de uso para a plataforma de compra e venda de ingressos desc
   2. Seleciona um evento e escolhe um ou mais ingressos disponíveis.
   3. Confirma a seleção e procede para o pagamento.
   4. Insere informações de pagamento e finaliza a compra.
-  5. Recebe confirmação da compra por e-mail ou notificação push.
+  5. Recebe confirmação da compra por e-mail.
 
 #### 2. Venda de Ingresso
 - **Ator Primário:** Vendedor

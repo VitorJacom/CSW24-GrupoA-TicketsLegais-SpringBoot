@@ -14,5 +14,11 @@ public interface TicketJpaRepository extends JpaRepository<TicketModel, Long> {
 
     @Query("SELECT t FROM TicketModel t WHERE t.eventId = ?1")
     List<TicketModel> getAllByEventId(Long eventId);
+    
+    Optional<TicketModel> findByUniqueVerificationCode(String uniqueVerificationCode);
+    
+    Collection<TicketModel> getAllBySeller_UserId(Long sellerId);
+    
+    Optional<TicketModel> getAllBySeller_UserIdAndStatus(Long seller_userId, TicketStatus status);
 
 }
