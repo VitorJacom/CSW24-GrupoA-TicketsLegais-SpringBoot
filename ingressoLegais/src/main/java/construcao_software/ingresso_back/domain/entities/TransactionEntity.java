@@ -1,12 +1,13 @@
 package construcao_software.ingresso_back.domain.entities;
 
-import construcao_software.ingresso_back.domain.base.TransactionStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+
+import construcao_software.ingresso_back.domain.enums.TransactionStatus;
 
 @Getter
 @Setter

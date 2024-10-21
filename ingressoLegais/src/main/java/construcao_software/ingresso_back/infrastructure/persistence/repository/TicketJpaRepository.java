@@ -1,6 +1,6 @@
 package construcao_software.ingresso_back.infrastructure.persistence.repository;
 
-import construcao_software.ingresso_back.domain.base.TicketStatus;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TicketModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

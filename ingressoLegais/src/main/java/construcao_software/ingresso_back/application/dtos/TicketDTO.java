@@ -1,6 +1,6 @@
 package construcao_software.ingresso_back.application.dtos;
 
-import construcao_software.ingresso_back.domain.base.TicketStatus;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import lombok.Data;
 
 @Data

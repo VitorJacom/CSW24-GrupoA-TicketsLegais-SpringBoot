@@ -6,10 +6,10 @@ import construcao_software.ingresso_back.application.mappers.TicketMapper;
 import construcao_software.ingresso_back.application.services.EventService;
 import construcao_software.ingresso_back.application.services.TicketService;
 import construcao_software.ingresso_back.application.services.UserService;
-import construcao_software.ingresso_back.domain.base.TicketStatus;
 import construcao_software.ingresso_back.domain.entities.EventEntity;
 import construcao_software.ingresso_back.domain.entities.TicketEntity;
 import construcao_software.ingresso_back.domain.entities.UserEntity;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

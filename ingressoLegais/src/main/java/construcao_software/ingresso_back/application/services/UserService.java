@@ -2,8 +2,8 @@ package construcao_software.ingresso_back.application.services;
 
 import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.mappers.UserMapper;
-import construcao_software.ingresso_back.domain.base.TicketStatus;
 import construcao_software.ingresso_back.domain.entities.UserEntity;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import construcao_software.ingresso_back.infrastructure.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

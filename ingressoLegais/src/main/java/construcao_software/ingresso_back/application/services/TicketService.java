@@ -2,9 +2,9 @@ package construcao_software.ingresso_back.application.services;
 
 import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.mappers.TicketMapper;
-import construcao_software.ingresso_back.domain.base.TicketStatus;
 import construcao_software.ingresso_back.domain.entities.TicketEntity;
 import construcao_software.ingresso_back.domain.entities.UserEntity;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import construcao_software.ingresso_back.infrastructure.persistence.repository.TicketJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

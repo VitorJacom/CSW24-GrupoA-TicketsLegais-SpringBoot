@@ -2,7 +2,7 @@ package construcao_software.ingresso_back.application.usecases;
 
 import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.services.TicketService;
-import construcao_software.ingresso_back.domain.base.TicketStatus;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

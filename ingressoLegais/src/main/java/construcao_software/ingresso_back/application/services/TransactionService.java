@@ -1,10 +1,10 @@
 package construcao_software.ingresso_back.application.services;
 
 import construcao_software.ingresso_back.application.mappers.TransactionMapper;
-import construcao_software.ingresso_back.domain.base.TransactionStatus;
 import construcao_software.ingresso_back.domain.entities.TicketEntity;
 import construcao_software.ingresso_back.domain.entities.TransactionEntity;
 import construcao_software.ingresso_back.domain.entities.UserEntity;
+import construcao_software.ingresso_back.domain.enums.TransactionStatus;
 import construcao_software.ingresso_back.infrastructure.persistence.repository.TransactionJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
-import construcao_software.ingresso_back.domain.base.TicketStatus;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
