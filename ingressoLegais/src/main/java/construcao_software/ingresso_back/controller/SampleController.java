@@ -1,9 +1,9 @@
 package construcao_software.ingresso_back.controller;
 
-import construcao_software.ingresso_back.domain.entities.SampleDomain;
-import construcao_software.ingresso_back.service.SampleMapper;
-import construcao_software.ingresso_back.service.SampleService;
-import construcao_software.ingresso_back.service.dto.SampleDTO;
+import construcao_software.ingresso_back.domain.entities.SampleEntity;
+import construcao_software.ingresso_back.service.dtos.SampleDTO;
+import construcao_software.ingresso_back.service.mappers.SampleMapper;
+import construcao_software.ingresso_back.service.services.SampleService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,17 +16,20 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/samples")
 public class SampleController {
 
-    @Autowired
-    private SampleService service;
+    private final SampleService service;
+    private final SampleMapper mapper;
 
     @Autowired
-    private SampleMapper mapper;
+    public SampleController(SampleService service, SampleMapper mapper) {
+        this.service = service;
+        this.mapper = mapper;
+    }
 
     // Create
     @PostMapping
     public ResponseEntity<SampleDTO> createSample(@RequestBody SampleDTO dto) {
-        SampleDomain domain = mapper.toDomain(dto);
-        SampleDomain created = service.createSample(domain);
+        SampleEntity domain = mapper.toEntity(dto);
+        SampleEntity created = service.createSample(domain);
         return ResponseEntity.ok(mapper.toDTO(created));
     }
 
@@ -42,7 +45,7 @@ public class SampleController {
     // Read By ID
     @GetMapping("/{id}")
     public ResponseEntity<SampleDTO> getSampleById(@PathVariable Long id) {
-        SampleDomain sample = service.getSampleById(id);
+        SampleEntity sample = service.getSampleById(id);
         if (sample != null) {
             return ResponseEntity.ok(mapper.toDTO(sample));
         } else {
@@ -53,8 +56,8 @@ public class SampleController {
     // Update
     @PutMapping("/{id}")
     public ResponseEntity<SampleDTO> updateSample(@PathVariable Long id, @RequestBody SampleDTO dto) {
-        SampleDomain domain = mapper.toDomain(dto);
-        SampleDomain updated = service.updateSample(id, domain);
+        SampleEntity domain = mapper.toEntity(dto);
+        SampleEntity updated = service.updateSample(id, domain);
         if (updated != null) {
             return ResponseEntity.ok(mapper.toDTO(updated));
         } else {
