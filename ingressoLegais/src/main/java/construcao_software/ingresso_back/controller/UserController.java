@@ -28,9 +28,7 @@ public class UserController {
 
     @GetMapping("/")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
-        List<UserDTO> users = service.getAll().stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+        List<UserDTO> users = service.getAll();
         return ResponseEntity.ok(users);
     }
 
@@ -39,8 +37,8 @@ public class UserController {
         return ResponseEntity.ok(getUserBalanceUC.run(userId));
     }
 
-    @GetMapping("/{userId}/tickets")
-    public ResponseEntity<Collection<TicketDTO>> getAllTickets(@PathVariable Long userId, @RequestParam(required = false) TicketStatus status) {
-        return ResponseEntity.ok(getUserSoldTickets.run(userId, status));
-    }
+    // @GetMapping("/{userId}/tickets")
+    // public ResponseEntity<Collection<TicketDTO>> getAllTickets(@PathVariable Long userId, @RequestParam(required = false) TicketStatus status) {
+    //     return ResponseEntity.ok(getUserSoldTickets.run(userId, status));
+    // }
 }

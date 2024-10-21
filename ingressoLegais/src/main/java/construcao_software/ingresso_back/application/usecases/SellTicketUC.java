@@ -24,22 +24,22 @@ public class SellTicketUC {
     private final TicketService ticketService;
     private final TicketMapper ticketMapper;
 
-    public TicketDTO run(CreateTicketDTO createTicketDTO) {
+    // public TicketDTO run(CreateTicketDTO createTicketDTO) {
 
-        UserEntity seller = userService.getUserByID(createTicketDTO.sellerId())
-                .orElseThrow(() -> new RuntimeException("Seller not found"));
+    //     UserEntity seller = userService.getUserByID(createTicketDTO.sellerId())
+    //             .orElseThrow(() -> new RuntimeException("Seller not found"));
 
-        EventEntity event = eventService.getEventByID(createTicketDTO.eventId())
-                .orElseThrow(() -> new RuntimeException("Event not found"));
+    //     EventEntity event = eventService.getEventByID(createTicketDTO.eventId())
+    //             .orElseThrow(() -> new RuntimeException("Event not found"));
 
-        TicketEntity ticket = new TicketEntity();
-        ticket.setSeller(seller);
-        ticket.setEvent(event);
-        ticket.setOriginalPrice(createTicketDTO.originalPrice());
-        ticket.setStatus(TicketStatus.AVAILABLE);
-        ticket.setUniqueVerificationCode(UUID.randomUUID().toString());
+    //     TicketEntity ticket = new TicketEntity();
+    //     ticket.setSeller(seller);
+    //     ticket.setEvent(event);
+    //     ticket.setOriginalPrice(createTicketDTO.originalPrice());
+    //     ticket.setStatus(TicketStatus.AVAILABLE);
+    //     ticket.setUniqueVerificationCode(UUID.randomUUID().toString());
 
-        return ticketMapper.toDTO(ticketService.createTicket(ticket));
+    //     return ticketMapper.toDTO(ticketService.createTicket(ticket));
 
-    }
+    // }
 }

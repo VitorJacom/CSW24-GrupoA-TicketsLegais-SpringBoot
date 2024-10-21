@@ -1,6 +1,7 @@
 package construcao_software.ingresso_back.application.services;
 
 import construcao_software.ingresso_back.application.dtos.TicketDTO;
+import construcao_software.ingresso_back.application.dtos.UserDTO;
 import construcao_software.ingresso_back.application.mappers.UserMapper;
 import construcao_software.ingresso_back.domain.entities.UserEntity;
 import construcao_software.ingresso_back.domain.enums.TicketStatus;
@@ -22,14 +23,14 @@ public class UserService {
     private final TicketService ticketService;
     private final TransactionService transactionService;
 
-    public List<UserEntity> getAll() {
+    public List<UserDTO> getAll() {
         return repository.findAll().stream()
-                .map(userMapper::toEntity)
+                .map(userMapper::toDTO)
                 .collect(Collectors.toList());
     }
 
-    public Optional<UserEntity> getUserByID(Long userID) {
-        return repository.findById(userID).map(userMapper::toEntity);
+    public Optional<UserDTO> getUserByID(Long userID) {
+        return repository.findById(userID).map(userMapper::toDTO);
     }
 
     public Double getBalance(Long sellerId) {

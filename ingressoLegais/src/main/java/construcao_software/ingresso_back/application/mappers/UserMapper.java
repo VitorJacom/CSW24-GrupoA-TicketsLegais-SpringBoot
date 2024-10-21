@@ -36,4 +36,8 @@ public class UserMapper {
         return modelMapper.map(entity, UserDTO.class);
     }
 
+    // Convert model to DTO
+    public UserDTO toDTO(UserModel model) {
+        return modelMapper.map(model, UserDTO.class);
+    }
 }

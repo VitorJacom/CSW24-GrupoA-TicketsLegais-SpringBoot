@@ -14,7 +14,7 @@ public class GetUserSoldTickets {
 
     private final TicketService ticketService;
 
-    public Collection<TicketDTO> run(Long sellerId, TicketStatus status) {
-        return ticketService.getAllBySellerId(sellerId, status);
-    }
+    // public Collection<TicketDTO> run(Long sellerId, TicketStatus status) {
+    //     return ticketService.getAllBySellerId(sellerId, status);
+    // }
 }

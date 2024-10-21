@@ -14,6 +14,7 @@ import construcao_software.ingresso_back.domain.enums.TransactionStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TransactionEntity {
+
     private Long transactionId;
     private TenantEntity tenant;
     private UserEntity buyer;
@@ -21,4 +22,15 @@ public class TransactionEntity {
     private Double sellingPrice;
     private LocalDateTime transactionDate;
     private TransactionStatus transactionStatus;
+
+    public TransactionEntity(TicketEntity ticketEntity, UserEntity buyerEntity, TenantEntity tenantEntity,
+            Double originalPrice, TransactionStatus completed) {
+
+        this.ticket = ticketEntity;
+        this.buyer = buyerEntity;
+        this.tenant = tenantEntity;
+        this.sellingPrice = originalPrice;
+        this.transactionStatus = completed;
+        transactionDate = LocalDateTime.now();
+    }
 }

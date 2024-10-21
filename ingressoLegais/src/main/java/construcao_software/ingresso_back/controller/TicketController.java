@@ -6,9 +6,11 @@ import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.dtos.TransactionDTO;
 import construcao_software.ingresso_back.application.mappers.TicketMapper;
 import construcao_software.ingresso_back.application.services.TicketService;
-import construcao_software.ingresso_back.application.usecases.BuyTicketUC;
 import construcao_software.ingresso_back.application.usecases.SellTicketUC;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,27 +24,56 @@ import java.util.stream.Collectors;
 public class TicketController {
     
     private final TicketService service;
-    private final TicketMapper mapper;
-    private final SellTicketUC sellTicketUC;
-    private final BuyTicketUC buyTicketsUC;
 
-
-    @GetMapping("/{eventId}")
+    // Obter todos os tickets por ID de evento
+    @GetMapping("/event/{eventId}")
     public ResponseEntity<List<TicketDTO>> getAllByEventId(@PathVariable("eventId") Long eventId) {
-        List<TicketDTO> tickets = service.getAllByEventId(eventId).stream()
-                .map(mapper::toDTO)
-                .collect(Collectors.toList());
+        List<TicketDTO> tickets = service.getAllByEventId(eventId);
         return ResponseEntity.ok(tickets);
     }
 
-    @PostMapping("/vender")
-    public ResponseEntity<TicketDTO> venderIngresso(@RequestBody CreateTicketDTO createTicketDTO) {
-        return ResponseEntity.ok(sellTicketUC.run(createTicketDTO));
+    // cria um ticket para Vender
+    @PostMapping("/sell")
+    public ResponseEntity<TicketDTO> sellTicket(@RequestBody CreateTicketDTO createTicketDTO) {
+        TicketDTO soldTicket = service.sellTicket(createTicketDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(soldTicket);
     }
 
-    @PostMapping("/comprar")
-    public ResponseEntity<Collection<TransactionDTO>> comprarIngresso(@RequestBody BuyTicketsDTO buyTicketsDTO) {
-        return ResponseEntity.ok(buyTicketsUC.run(buyTicketsDTO));
+    // Comprar um ticket (Processar a compra)
+    @PostMapping("/buy")
+    public ResponseEntity<Collection<TicketDTO>> buyTickets(@RequestBody BuyTicketsDTO buyTicketsDTO) {
+
+        Collection<TicketDTO> ticketDTOs = service.processTicketSale(buyTicketsDTO);
+        return ResponseEntity.ok(ticketDTOs);
+    }
+
+    // Obter um ticket por ID
+    @GetMapping("/{ticketId}")
+    public ResponseEntity<TicketDTO> getTicketById(@PathVariable("ticketId") Long ticketId) {
+        return service.getTicketById(ticketId)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    // Obter todos os tickets por ID de vendedor e status
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<Collection<TicketDTO>> getAllBySellerId(
+            @PathVariable("sellerId") Long sellerId,
+            @RequestParam(value = "status", required = false) TicketStatus status) {
+        Collection<TicketDTO> tickets = service.getAllBySellerId(sellerId, status);
+        return ResponseEntity.ok(tickets);
+    }
+
+
+    // Validar e usar o ingresso
+    @PutMapping("/validate/{ticketId}")
+    public ResponseEntity<TicketDTO> validateAndUseTicket(@PathVariable("ticketId") Long ticketId) {
+        try {
+            TicketDTO ticketDTO = service.validateAndUseTicket(ticketId).get();
+            return ResponseEntity.ok(ticketDTO);
+        } catch (RuntimeException ex) {
+            return ResponseEntity.badRequest().body(null);
+        }
     }
 
 }
