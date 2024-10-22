@@ -2,9 +2,9 @@ package construcao_software.ingresso_back.application.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import construcao_software.ingresso_back.domain.models.NotificationPreferences;
-import construcao_software.ingresso_back.service.dtos.NotificationPreferencesDTO;
+import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.NotificationPreferencesModel;
 import construcao_software.ingresso_back.infrastructure.persistence.repository.NotificationPreferencesJpaRepository;
+import construcao_software.ingresso_back.application.dtos.NotificationPreferencesDTO;
 import construcao_software.ingresso_back.application.mappers.NotificationPreferencesMapper;
 
 @Service
@@ -21,21 +21,23 @@ public class NotificationPreferencesService {
 
     // GET by User
     public NotificationPreferencesDTO getByUser(Long userId) {
-        NotificationPreferences preferences = repository.findByUserId(userId);
-        return mapper.toDto(preferences);
+        NotificationPreferencesModel preferences = repository.findByUserId(userId);
+        return mapper.toDTO(preferences);
     }
 
     // PUT
     public NotificationPreferencesDTO updatePreferences(Long userId, NotificationPreferencesDTO dto) {
-        NotificationPreferences preferences = repository.findByUserId(userId);
+        
+        NotificationPreferencesModel preferences = repository.findByUserId(userId);
+
         if (preferences != null) {
-            preferences.setEmailNotifications(dto.getEmailNotifications());
+            preferences.setAllowEmailNotifications(dto.isAllowEmailNotifications());
             repository.save(preferences);
         } else {
-            preferences = mapper.toEntity(dto);
-            preferences.setUserId(userId);
+            preferences = mapper.toModel(dto);
+            preferences.setUser(mapper.toModel(dto).getUser());
             repository.save(preferences);
         }
-        return mapper.toDto(preferences);
+        return mapper.toDTO(preferences);
     }
 }

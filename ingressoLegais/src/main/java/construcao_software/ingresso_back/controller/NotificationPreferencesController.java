@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import construcao_software.ingresso_back.application.dtos.NotificationPreferencesDTO;
 import construcao_software.ingresso_back.application.mappers.NotificationPreferencesMapper;
 import construcao_software.ingresso_back.application.services.NotificationPreferencesService;
 
