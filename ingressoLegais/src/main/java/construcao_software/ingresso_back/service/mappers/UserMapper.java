@@ -1,11 +1,11 @@
-package construcao_software.ingresso_back.application.mappers;
+package construcao_software.ingresso_back.service.mappers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import construcao_software.ingresso_back.domain.entities.UserEntity;
 import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.UserModel;
-import construcao_software.ingresso_back.application.dtos.UserDTO;
+import construcao_software.ingresso_back.service.dtos.UserDTO;
 
 @Component
 public class UserMapper {

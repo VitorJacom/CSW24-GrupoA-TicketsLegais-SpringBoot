@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.application.mappers;
+package construcao_software.ingresso_back.service.mappers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import construcao_software.ingresso_back.domain.entities.TenantEntity;
 import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TenantModel;
-import construcao_software.ingresso_back.application.dtos.TenantDTO;
+import construcao_software.ingresso_back.service.dtos.TenantDTO;
 
 @Component
 public class TenantMapper {

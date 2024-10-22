@@ -1,11 +1,11 @@
-package construcao_software.ingresso_back.application.mappers;
+package construcao_software.ingresso_back.service.mappers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import construcao_software.ingresso_back.domain.entities.TransactionEntity;
 import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TransactionModel;
-import construcao_software.ingresso_back.application.dtos.TransactionDTO;
+import construcao_software.ingresso_back.service.dtos.TransactionDTO;
 
 @Component
 public class TransactionMapper {

@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.application.dtos;
+package construcao_software.ingresso_back.service.dtos;
 
 import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.PrivacySettingsModel;
 import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TenantModel;
@@ -9,8 +9,8 @@ public class UserDTO {
     
     private Long userId;
     private TenantModel tenant;
-    private String name;
+    private String nome;
     private String email;
     private String firebaseToken;
-    private PrivacySettingsModel privacySettings;
+    private PrivacySettingsModel configuracoesDePrivacidade;
 }

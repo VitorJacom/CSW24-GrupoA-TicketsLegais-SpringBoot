@@ -2,7 +2,7 @@ package construcao_software.ingresso_back.application.usecases;
 
 import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.services.TicketService;
-import construcao_software.ingresso_back.domain.enums.TicketStatus;
+import construcao_software.ingresso_back.domain.base.TicketStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +14,7 @@ public class GetUserSoldTickets {
 
     private final TicketService ticketService;
 
-    // public Collection<TicketDTO> run(Long sellerId, TicketStatus status) {
-    //     return ticketService.getAllBySellerId(sellerId, status);
-    // }
+    public Collection<TicketDTO> run(Long sellerId, TicketStatus status) {
+        return ticketService.getAllBySellerId(sellerId, status);
+    }
 }

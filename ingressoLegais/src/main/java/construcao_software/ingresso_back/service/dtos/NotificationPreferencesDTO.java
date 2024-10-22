@@ -1,4 +1,4 @@
-package construcao_software.ingresso_back.application.dtos;
+package construcao_software.ingresso_back.service.dtos;
 
 import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.UserModel;
 import lombok.Data;
