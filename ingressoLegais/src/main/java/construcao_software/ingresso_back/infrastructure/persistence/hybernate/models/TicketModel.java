@@ -30,7 +30,7 @@ public class TicketModel {
     private Double originalPrice;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id", nullable = false)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id")
     private UserModel seller;
 
     @Column(nullable = false, unique = true)

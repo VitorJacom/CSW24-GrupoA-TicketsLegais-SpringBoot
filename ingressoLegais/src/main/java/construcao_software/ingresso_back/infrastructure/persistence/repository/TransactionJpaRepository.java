@@ -10,6 +10,6 @@ import construcao_software.ingresso_back.infrastructure.persistence.hybernate.mo
 @Repository
 public interface TransactionJpaRepository extends JpaRepository<TransactionModel, Long> {
     List<TransactionModel> findByTenant_TenantId(Long tenantId);
-    List<TransactionModel> findByUserId(Long userId);
-    List<TransactionModel> findAllByUserId(Long userId);
+    List<TransactionModel> findByBuyer_UserId(Long userId); 
+    List<TransactionModel> findAllByBuyer_UserId(Long userId);
 }

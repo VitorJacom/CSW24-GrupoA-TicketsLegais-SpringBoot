@@ -6,7 +6,6 @@ import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.dtos.TransactionDTO;
 import construcao_software.ingresso_back.application.mappers.TicketMapper;
 import construcao_software.ingresso_back.application.services.TicketService;
-import construcao_software.ingresso_back.application.usecases.SellTicketUC;
 import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import lombok.RequiredArgsConstructor;
 

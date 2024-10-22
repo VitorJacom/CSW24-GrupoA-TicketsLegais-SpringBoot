@@ -157,7 +157,7 @@ public class TicketService {
     }
 
     public List<TicketDTO> getTicketsByUser(Long userId) {
-        return repository.findByUserId(userId).stream()
+        return repository.findByUser(userId).stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }

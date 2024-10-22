@@ -9,7 +9,7 @@ import construcao_software.ingresso_back.application.dtos.TransactionDTO;
 
 @Component
 public class TransactionMapper {
-    
+
     private final ModelMapper modelMapper;
 
     public TransactionMapper() {
@@ -34,5 +34,10 @@ public class TransactionMapper {
     // Convert Entity to DTO
     public TransactionDTO toDTO(TransactionEntity entity) {
         return modelMapper.map(entity, TransactionDTO.class);
+    }
+
+    // Convert Entity to DTO
+    public TransactionDTO toDTO(TransactionModel model) {
+        return modelMapper.map(model, TransactionDTO.class);
     }
 }

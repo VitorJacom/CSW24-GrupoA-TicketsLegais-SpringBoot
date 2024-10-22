@@ -23,6 +23,7 @@ public class TransactionEntity {
     private LocalDateTime transactionDate;
     private TransactionStatus transactionStatus;
 
+    public TransactionEntity(TicketEntity ticketEntity, UserEntity buyerEntity, TenantEntity tenantEntity,
             Double originalPrice, TransactionStatus completed) {
 
         this.ticket = ticketEntity;

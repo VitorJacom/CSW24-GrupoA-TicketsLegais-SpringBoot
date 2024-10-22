@@ -88,13 +88,13 @@ public class TransactionService {
     }
 
     public List<TransactionEntity> getTransactionsByUser(Long userId) {
-        return repository.findByUserId(userId).stream()
+        return repository.findByBuyer_UserId(userId).stream()
                 .map(mapper::toEntity)
                 .collect(Collectors.toList());
     }
 
     public List<TransactionEntity> getAllTransactionsByUser(Long userId) {
-    return repository.findAllByUserId(userId).stream()
+    return repository.findAllByBuyer_UserId(userId).stream()
             .map(mapper::toEntity)
             .collect(Collectors.toList());
 }

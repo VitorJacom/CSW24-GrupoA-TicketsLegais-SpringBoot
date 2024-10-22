@@ -29,5 +29,5 @@ An in-depth explanation of the assignment can be found [here](https://github.com
 
 #### Step-by-step guide
 1. First it is necessary to run the database trough Docker using ```docker compose up```
-2. Then, on the root directory, run ```mvw spring-boot:run``` to start the project
+2. Then, on the root directory, run ```mvn spring-boot:run``` to start the project
 3. Lastly, the it can be tested on swagger at localhost:8080/swagger-ui/index.html
