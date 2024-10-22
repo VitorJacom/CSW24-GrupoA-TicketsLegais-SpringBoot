@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import construcao_software.ingresso_back.application.dtos.TransactionDTO;
+import construcao_software.ingresso_back.domain.entities.TransactionEntity;
 import construcao_software.ingresso_back.application.dtos.TransactionRequest;
 import construcao_software.ingresso_back.application.mappers.TransactionMapper;
 import construcao_software.ingresso_back.application.services.TransactionService;
@@ -49,5 +50,15 @@ public class TransactionController {
     public ResponseEntity<List<TransactionDTO>> getAllTransactionsByTenant(@PathVariable Long tenantId) {
         List<TransactionDTO> transactions = service.getAllTransactionsByTenant(tenantId);
         return ResponseEntity.ok(transactions);
+    }
+
+    @GetMapping("/user/{userId}")
+    public List<TransactionEntity> getTransactionsByUser(@PathVariable Long userId) {
+        return service.getTransactionsByUser(userId);
+    }
+
+    @GetMapping("/user/{userId}/all")
+    public List<TransactionEntity> getAllTransactionsByUser(@PathVariable Long userId) {
+        return service.getAllTransactionsByUser(userId);
     }
 }

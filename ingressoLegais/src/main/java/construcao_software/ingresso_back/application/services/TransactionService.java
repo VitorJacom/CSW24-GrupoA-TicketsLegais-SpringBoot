@@ -87,4 +87,16 @@ public class TransactionService {
                 .collect(Collectors.toList());
     }
 
+    public List<TransactionEntity> getTransactionsByUser(Long userId) {
+        return repository.findByUserId(userId).stream()
+                .map(mapper::toEntity)
+                .collect(Collectors.toList());
+    }
+
+    public List<TransactionEntity> getAllTransactionsByUser(Long userId) {
+    return repository.findAllByUserId(userId).stream()
+            .map(mapper::toEntity)
+            .collect(Collectors.toList());
+}
+
 }

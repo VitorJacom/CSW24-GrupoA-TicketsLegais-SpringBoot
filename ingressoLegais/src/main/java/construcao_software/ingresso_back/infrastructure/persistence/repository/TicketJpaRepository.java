@@ -22,6 +22,8 @@ public interface TicketJpaRepository extends JpaRepository<TicketModel, Long> {
 
     Optional<TicketModel> getAllBySeller_UserIdAndStatus(Long seller_userId, TicketStatus status);
 
+    List<TicketModel> findByUserId(Long userId);
+
     @Query("SELECT t FROM TicketModel t WHERE t.seller.id = :sellerId AND t.status = :status")
     List<TicketModel> findBySellerIdAndStatus(Long sellerId, TicketStatus status);
 }
