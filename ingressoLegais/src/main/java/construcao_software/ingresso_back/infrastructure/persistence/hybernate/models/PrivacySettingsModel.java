@@ -18,7 +18,7 @@ public class PrivacySettingsModel {
     private Long privacySettingsId;
 
     @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "user_id")
     private UserModel user;
 
     @Column(nullable = false)

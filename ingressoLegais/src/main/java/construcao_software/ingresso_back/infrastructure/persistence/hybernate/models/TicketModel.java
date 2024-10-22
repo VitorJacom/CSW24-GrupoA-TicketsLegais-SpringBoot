@@ -37,5 +37,6 @@ public class TicketModel {
     private String uniqueVerificationCode;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TicketStatus status;
 }

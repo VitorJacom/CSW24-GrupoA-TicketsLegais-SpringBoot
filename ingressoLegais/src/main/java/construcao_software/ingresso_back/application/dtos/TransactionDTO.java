@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import org.springframework.transaction.TransactionStatus;
+
 @Data
 public class TransactionDTO {
     
@@ -13,5 +15,5 @@ public class TransactionDTO {
     private TicketDTO ticket;
     private Double sellingPrice;
     private LocalDateTime transactionDate;
-    private String transactionStatus;    
+    private TransactionStatus transactionStatus;    
 }

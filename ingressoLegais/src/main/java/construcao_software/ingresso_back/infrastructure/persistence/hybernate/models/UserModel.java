@@ -1,5 +1,7 @@
 package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,5 +34,6 @@ public class UserModel {
 
     @OneToOne
     @JoinColumn(name = "privacy_settings_id")
+    @JsonManagedReference
     private PrivacySettingsModel privacySettings;
 }

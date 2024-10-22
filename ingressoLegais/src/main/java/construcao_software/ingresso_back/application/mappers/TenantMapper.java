@@ -10,7 +10,7 @@ import construcao_software.ingresso_back.application.dtos.TenantDTO;
 
 @Component
 public class TenantMapper {
-    
+
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -18,24 +18,28 @@ public class TenantMapper {
         this.modelMapper = new ModelMapper();
     }
 
-    // Convert Model to Entity
     public TenantEntity toEntity(TenantModel model) {
         return modelMapper.map(model, TenantEntity.class);
     }
 
-    // Convert DTO to Entity
     public TenantEntity toEntity(TenantDTO dto) {
         return modelMapper.map(dto, TenantEntity.class);
     }
 
-    // Convert Entity to Model
     public TenantModel toModel(TenantEntity entity) {
         return modelMapper.map(entity, TenantModel.class);
     }
 
-    // Convert Entity to DTO
+    public TenantModel toModel(TenantDTO dto) {
+        return modelMapper.map(dto, TenantModel.class);
+    }
+
     public TenantDTO toDTO(TenantEntity entity) {
         return modelMapper.map(entity, TenantDTO.class);
+    }
+
+    public TenantDTO toDTO(TenantModel model) {
+        return modelMapper.map(model, TenantDTO.class);
     }
 
 }

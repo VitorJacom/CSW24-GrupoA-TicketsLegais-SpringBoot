@@ -21,14 +21,14 @@ public class NotificationPreferencesService {
 
     // GET by User
     public NotificationPreferencesDTO getByUser(Long userId) {
-        NotificationPreferencesModel preferences = repository.findByUserId(userId);
+        NotificationPreferencesModel preferences = repository.findByUser_UserId(userId);
         return mapper.toDTO(preferences);
     }
 
     // PUT
     public NotificationPreferencesDTO updatePreferences(Long userId, NotificationPreferencesDTO dto) {
         
-        NotificationPreferencesModel preferences = repository.findByUserId(userId);
+        NotificationPreferencesModel preferences = repository.findByUser_UserId(userId);
 
         if (preferences != null) {
             preferences.setAllowEmailNotifications(dto.isAllowEmailNotifications());

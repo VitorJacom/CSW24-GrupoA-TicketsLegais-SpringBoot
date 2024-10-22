@@ -1,19 +1,15 @@
 package construcao_software.ingresso_back.controller;
 
-import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.dtos.UserDTO;
 import construcao_software.ingresso_back.application.mappers.UserMapper;
 import construcao_software.ingresso_back.application.services.UserService;
 import construcao_software.ingresso_back.application.usecases.GetUserBalanceUC;
 import construcao_software.ingresso_back.application.usecases.GetUserSoldTickets;
-import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -21,10 +17,8 @@ import java.util.stream.Collectors;
 public class UserController {
 
     private final UserService service;
-    private final UserMapper mapper;
 
     private final GetUserBalanceUC getUserBalanceUC;
-    private final GetUserSoldTickets getUserSoldTickets;
 
     @GetMapping("/")
     public ResponseEntity<List<UserDTO>> getAllUsers() {
@@ -36,9 +30,4 @@ public class UserController {
     public ResponseEntity<Double> getBalance(@PathVariable Long userId) {
         return ResponseEntity.ok(getUserBalanceUC.run(userId));
     }
-
-    // @GetMapping("/{userId}/tickets")
-    // public ResponseEntity<Collection<TicketDTO>> getAllTickets(@PathVariable Long userId, @RequestParam(required = false) TicketStatus status) {
-    //     return ResponseEntity.ok(getUserSoldTickets.run(userId, status));
-    // }
 }

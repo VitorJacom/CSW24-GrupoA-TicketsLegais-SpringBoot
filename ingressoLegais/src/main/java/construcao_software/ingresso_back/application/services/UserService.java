@@ -3,8 +3,9 @@ package construcao_software.ingresso_back.application.services;
 import construcao_software.ingresso_back.application.dtos.TicketDTO;
 import construcao_software.ingresso_back.application.dtos.UserDTO;
 import construcao_software.ingresso_back.application.mappers.UserMapper;
-import construcao_software.ingresso_back.domain.entities.UserEntity;
 import construcao_software.ingresso_back.domain.enums.TicketStatus;
+import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TicketModel;
+import construcao_software.ingresso_back.infrastructure.persistence.repository.TicketJpaRepository;
 import construcao_software.ingresso_back.infrastructure.persistence.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,7 @@ public class UserService {
     
     private final UserJpaRepository repository;
     private final UserMapper userMapper;
-
-    private final TicketService ticketService;
-    private final TransactionService transactionService;
+    private final TicketJpaRepository ticketRepository;
 
     public List<UserDTO> getAll() {
         return repository.findAll().stream()
@@ -34,8 +33,10 @@ public class UserService {
     }
 
     public Double getBalance(Long sellerId) {
-        return ticketService.getAllBySellerId(sellerId, TicketStatus.SOLD).stream()
-                .mapToDouble(TicketDTO::getOriginalPrice)
+        List<TicketModel> tickets = ticketRepository.findBySellerIdAndStatus(sellerId, TicketStatus.SOLD);
+        
+        return tickets.stream()
+                .mapToDouble(TicketModel::getOriginalPrice) // ou usar um método para converter para TicketDTO se necessário
                 .sum();
     }
 }

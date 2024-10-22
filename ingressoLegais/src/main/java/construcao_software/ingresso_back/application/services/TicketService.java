@@ -29,26 +29,32 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
 public class TicketService {
 
-    @Autowired
-    private final TicketJpaRepository repository;
-    @Autowired
-    private final UserService userService;
-    @Autowired
-    private final EventService eventService;
-    @Autowired
-    private final TicketService ticketService;
-    @Autowired
-    private final TransactionService transactionService;
-    @Autowired
-    private final TicketMapper mapper;
-    @Autowired
-    private final EventMapper eventMapper;
-    @Autowired
-    private final UserMapper userMapper;
+    private TicketJpaRepository repository;
+    private UserService userService;
+    private EventService eventService;
+    private TransactionService transactionService;
+    private TicketMapper mapper;
+    private EventMapper eventMapper;
+    private UserMapper userMapper;
+
+    public TicketService(TicketJpaRepository repository, 
+                         UserService userService, 
+                         EventService eventService, 
+                         TransactionService transactionService, 
+                         TicketMapper mapper, 
+                         EventMapper eventMapper, 
+                         UserMapper userMapper) {
+        this.repository = repository;
+        this.userService = userService;
+        this.eventService = eventService;
+        this.transactionService = transactionService;
+        this.mapper = mapper;
+        this.eventMapper = eventMapper;
+        this.userMapper = userMapper;
+    }
 
     public List<TicketDTO> getAllByEventId(Long eventId) {
         return repository.getAllByEvent_EventId(eventId).stream()
@@ -85,7 +91,7 @@ public class TicketService {
         ArrayList<TicketDTO> ticketDTOs = new ArrayList<>();
 
         for (Long ticketID : buyTicketsDTO.ticketIds()) {
-            TicketDTO ticketDTO = ticketService.getTicketById(ticketID)
+            TicketDTO ticketDTO = this.getTicketById(ticketID)
                     .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
             if (!ticketDTO.getStatus().equals(TicketStatus.AVAILABLE))
