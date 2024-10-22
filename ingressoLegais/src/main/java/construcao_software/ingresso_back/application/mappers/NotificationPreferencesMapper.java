@@ -9,7 +9,7 @@ import construcao_software.ingresso_back.application.dtos.NotificationPreference
 
 @Component
 public class NotificationPreferencesMapper {
-    
+
     private final ModelMapper modelMapper;
 
     public NotificationPreferencesMapper() {
@@ -27,12 +27,22 @@ public class NotificationPreferencesMapper {
     }
 
     // Converter Entity para Model
-    public NotificationPreferencesModel toEntity(NotificationPreferencesEntity entity) {
+    public NotificationPreferencesModel toModel(NotificationPreferencesEntity entity) {
         return modelMapper.map(entity, NotificationPreferencesModel.class);
+    }
+
+    // Converter Entity para Model
+    public NotificationPreferencesModel toModel(NotificationPreferencesDTO dto) {
+        return modelMapper.map(dto, NotificationPreferencesModel.class);
     }
 
     // Converter Entity para DTO
     public NotificationPreferencesDTO toDTO(NotificationPreferencesEntity entity) {
         return modelMapper.map(entity, NotificationPreferencesDTO.class);
+    }
+
+    // Converter Model para DTO
+    public NotificationPreferencesDTO toDTO(NotificationPreferencesModel model) {
+        return modelMapper.map(model, NotificationPreferencesDTO.class);
     }
 }

@@ -1,14 +1,14 @@
 package construcao_software.ingresso_back.infrastructure.persistence.repository;
 
+import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.PrivacySettingsModel;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.PrivacySettingsModel;
+import java.util.Optional;
 
 @Repository
 public interface PrivacySettingsJpaRepository extends JpaRepository<PrivacySettingsModel, Long> {
-    
-    @Query("SELECT p FROM PrivacySettingsModel p WHERE p.userId = ?1")
-    PrivacySettingsModel findByUserId(Long userId);
+
+    //find by userid
+    Optional<PrivacySettingsModel> findByUser_UserId(Long userId);
 }

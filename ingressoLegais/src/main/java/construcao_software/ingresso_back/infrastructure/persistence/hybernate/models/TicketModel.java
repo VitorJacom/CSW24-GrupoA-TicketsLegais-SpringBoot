@@ -1,6 +1,6 @@
 package construcao_software.ingresso_back.infrastructure.persistence.hybernate.models;
 
-import construcao_software.ingresso_back.domain.base.TicketStatus;
+import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,19 +23,20 @@ public class TicketModel {
     private EventModel event;
 
     @ManyToOne
-    @JoinColumn(name = "tenant_id", nullable = false)
+    @JoinColumn(name = "tenant_id")
     private TenantModel tenant;
 
     @Column(nullable = false)
     private Double originalPrice;
 
     @ManyToOne
-    @JoinColumn(name = "seller_id")
+    @JoinColumn(name = "seller_id", nullable = false)
     private UserModel seller;
 
     @Column(nullable = false, unique = true)
     private String uniqueVerificationCode;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private TicketStatus status;
 }

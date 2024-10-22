@@ -4,7 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.time.LocalDateTime;
+
+import construcao_software.ingresso_back.domain.enums.TransactionStatus;
 
 @Getter
 @Setter
@@ -37,5 +40,6 @@ public class TransactionModel {
     private LocalDateTime transactionDate;
 
     @Column(nullable = false)
-    private String transactionStatus;
+    @Enumerated(EnumType.STRING) 
+    private TransactionStatus transactionStatus;
 }

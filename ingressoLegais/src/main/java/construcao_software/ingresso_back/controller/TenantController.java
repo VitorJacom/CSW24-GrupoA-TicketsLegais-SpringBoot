@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import construcao_software.ingresso_back.domain.entities.TenantEntity;
-import construcao_software.ingresso_back.service.dtos.TenantDTO;
-import construcao_software.ingresso_back.service.mappers.TenantMapper;
-import construcao_software.ingresso_back.service.services.TenantService;
+import construcao_software.ingresso_back.application.dtos.TenantDTO;
+import construcao_software.ingresso_back.application.mappers.TenantMapper;
+import construcao_software.ingresso_back.application.services.TenantService;
 
 @RestController
 @RequestMapping("/api/tenants")

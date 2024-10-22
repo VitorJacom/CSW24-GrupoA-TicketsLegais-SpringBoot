@@ -1,9 +1,9 @@
 package construcao_software.ingresso_back.controller;
 
 import construcao_software.ingresso_back.domain.entities.SampleEntity;
-import construcao_software.ingresso_back.service.dtos.SampleDTO;
-import construcao_software.ingresso_back.service.mappers.SampleMapper;
-import construcao_software.ingresso_back.service.services.SampleService;
+import construcao_software.ingresso_back.application.dtos.SampleDTO;
+import construcao_software.ingresso_back.application.mappers.SampleMapper;
+import construcao_software.ingresso_back.application.services.SampleService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

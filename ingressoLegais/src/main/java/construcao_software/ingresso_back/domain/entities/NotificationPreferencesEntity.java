@@ -15,4 +15,20 @@ public class NotificationPreferencesEntity {
     private UserModel user;
     private boolean allowEmailNotifications;
     private boolean allowPushNotifications;
+
+    public void enableEmailNotifications() {
+        this.allowEmailNotifications = true;
+    }
+
+    public void disableEmailNotifications() {
+        this.allowEmailNotifications = false;
+    }
+
+    public void enablePushNotifications() {
+        this.allowPushNotifications = true;
+    }
+
+    public void disablePushNotifications() {
+        this.allowPushNotifications = false;
+    }
 }
