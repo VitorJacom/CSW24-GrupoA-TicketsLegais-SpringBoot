@@ -55,6 +55,11 @@ public class TicketController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @GetMapping("/user/{userId}")
+    public List<TicketDTO> getTicketsByUser(@PathVariable Long userId) {
+        return service.getTicketsByUser(userId);
+    }
+    
     // Obter todos os tickets por ID de vendedor e status
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<Collection<TicketDTO>> getAllBySellerId(

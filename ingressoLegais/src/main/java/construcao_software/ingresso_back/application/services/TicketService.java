@@ -155,4 +155,10 @@ public class TicketService {
             return ticketDTO;
         }).orElseThrow(() -> new RuntimeException("Ingresso não encontrado com ID: " + ticketId));
     }
+
+    public List<TicketDTO> getTicketsByUser(Long userId) {
+        return repository.findByUserId(userId).stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }
