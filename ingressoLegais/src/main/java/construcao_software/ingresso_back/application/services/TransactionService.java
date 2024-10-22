@@ -22,27 +22,25 @@ import java.util.stream.Collectors;
 
 @Service
 public class TransactionService {
-        
-        @Autowired
-        private TransactionJpaRepository repository;
-        @Autowired
-        private TransactionMapper mapper;
-        @Autowired
-        private UserMapper userMapper;
-        @Autowired
-        private TicketMapper ticketMapper;
-        @Autowired
-        private EmailService emailService;
-        @Autowired
-        private PrivacySettingsService privacySettingsService;
-    
-        
-        public List<TransactionEntity> getAllTransactions() {
-            return repository.findAll().stream()
-                    .map(mapper::toEntity)
-                    .collect(Collectors.toList());
-        }
 
+    @Autowired
+    private TransactionJpaRepository repository;
+    @Autowired
+    private TransactionMapper mapper;
+    @Autowired
+    private UserMapper userMapper;
+    @Autowired
+    private TicketMapper ticketMapper;
+    @Autowired
+    private EmailService emailService;
+    @Autowired
+    private PrivacySettingsService privacySettingsService;
+
+    public List<TransactionEntity> getAllTransactions() {
+        return repository.findAll().stream()
+                .map(mapper::toEntity)
+                .collect(Collectors.toList());
+    }
 
     public TransactionDTO createTransaction(TicketDTO ticketDTO, UserDTO buyerDTO) {
         TicketEntity ticketEntity = ticketMapper.toEntity(ticketDTO);
@@ -64,8 +62,7 @@ public class TransactionService {
         // Criar transação
         TransactionEntity transaction = new TransactionEntity(
                 ticketEntity, buyerEntity, buyerEntity.getTenant(),
-                ticketEntity.getOriginalPrice(), TransactionStatus.COMPLETED
-        );
+                ticketEntity.getOriginalPrice(), TransactionStatus.COMPLETED);
 
         TransactionModel transactionModel = repository.save(mapper.toModel(transaction));
 
@@ -77,9 +74,17 @@ public class TransactionService {
         return mapper.toDTO(transactionModel);
     }
 
-    //TODO: MOCK
+    // TODO: MOCK
     private boolean mockPaymentProcess() {
         return true;
+    }
+
+    // Buscar todas as transações de um vendedor (Tenant)
+    public List<TransactionDTO> getAllTransactionsByTenant(Long tenantId) {
+        List<TransactionModel> transactions = repository.findByTenant_TenantId(tenantId);
+        return transactions.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
     }
 
 }
