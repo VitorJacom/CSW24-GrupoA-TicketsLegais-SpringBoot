@@ -56,4 +56,4 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/ingresso_legais?createDatabaseIfNotExist=true
           SPRING_DATASOURCE_USERNAME: root
           SPRING_DATASOURCE_PASSWORD: root_password
-        run: mvn clean verify
+        run: mvn clean verify -X
