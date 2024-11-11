@@ -1,29 +1,30 @@
 SET FOREIGN_KEY_CHECKS = 0;
 
-DROP TABLE IF EXISTS configuracoes_de_privacidade;
-DROP TABLE IF EXISTS event;
-DROP TABLE IF EXISTS evento;
-DROP TABLE IF EXISTS notification_preferences;
-DROP TABLE IF EXISTS preferencias_de_notificacao;
-DROP TABLE IF EXISTS privacy_settings;
-DROP TABLE IF EXISTS sample_entity;
-DROP TABLE IF EXISTS tenant;
-DROP TABLE IF EXISTS ticket;
-DROP TABLE IF EXISTS transacao;
-DROP TABLE IF EXISTS transaction;
-DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS usuario;
+# DROP TABLE IF EXISTS configuracoes_de_privacidade;
+# DROP TABLE IF EXISTS event;
+# DROP TABLE IF EXISTS evento;
+# DROP TABLE IF EXISTS notification_preferences;
+# DROP TABLE IF EXISTS preferencias_de_notificacao;
+# DROP TABLE IF EXISTS privacy_settings;
+# DROP TABLE IF EXISTS sample_entity;
+# DROP TABLE IF EXISTS tenant;
+# DROP TABLE IF EXISTS ticket;
+# DROP TABLE IF EXISTS transacao;
+# DROP TABLE IF EXISTS transaction;
+# DROP TABLE IF EXISTS user;
+# DROP TABLE IF EXISTS usuario;
+
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-INSERT INTO tenant (name, contact_information, specific_configurations) VALUES 
+INSERT IGNORE INTO tenant (name, contact_information, specific_configurations) VALUES
 ('Tenant One', 'tenant1@example.com', 'Configuration 1'),
 ('Tenant Two', 'tenant2@example.com', 'Configuration 2'),
 ('Tenant Three', 'tenant3@example.com', 'Configuration 3'),
 ('Tenant Four', 'tenant4@example.com', 'Configuration 4'),
 ('Tenant Five', 'tenant5@example.com', 'Configuration 5');
 
-INSERT INTO user (tenant_id, name, email, firebase_token, privacy_settings_id) VALUES 
+INSERT IGNORE INTO user (tenant_id, name, email, firebase_token, notification_preferences_id) VALUES
 (1, 'User One', 'user1@example.com', 'token1', NULL),
 (1, 'User Two', 'user2@example.com', 'token2', NULL),
 (2, 'User Three', 'user3@example.com', 'token3', NULL),
@@ -35,8 +36,7 @@ INSERT INTO user (tenant_id, name, email, firebase_token, privacy_settings_id) V
 (5, 'User Nine', 'user9@example.com', 'token9', NULL),
 (5, 'User Ten', 'user10@example.com', 'token10', NULL);
 
-
-INSERT INTO event (tenant_id, event_name, type, location, date_time) VALUES 
+INSERT IGNORE INTO event (tenant_id, event_name, type, location, date_time) VALUES
 (1, 'Concert One', 'Music', 'Location A', '2024-11-01 19:00:00'),
 (1, 'Festival One', 'Festival', 'Location B', '2024-11-05 16:00:00'),
 (2, 'Concert Two', 'Music', 'Location C', '2024-11-10 20:00:00'),
@@ -53,7 +53,7 @@ INSERT INTO event (tenant_id, event_name, type, location, date_time) VALUES
 (4, 'Conference Three', 'Conference', 'Location N', '2024-12-07 09:30:00'),
 (5, 'Workshop Two', 'Workshop', 'Location O', '2024-12-09 13:00:00');
 
-INSERT INTO ticket (event_id, tenant_id, original_price, seller_id, unique_verification_code, status) VALUES 
+INSERT IGNORE INTO ticket (event_id, tenant_id, original_price, seller_id, unique_verification_code, status) VALUES
 (1, NULL, 50.00, 1, 'CODE1-AVAIL', 'AVAILABLE'),
 (1, NULL, 60.00, 2, 'CODE2-RES', 'RESERVED'),
 (2, NULL, 70.00, 3, 'CODE3-AVAIL', 'AVAILABLE'),
@@ -80,7 +80,7 @@ INSERT INTO ticket (event_id, tenant_id, original_price, seller_id, unique_verif
 (14, 5, 75.00, 4, 'CODE24-SOLD', 'SOLD'),
 (15, 5, 85.00, 5, 'CODE25-USED', 'USED');
 
-INSERT INTO transaction (tenant_id, buyer_id, ticket_id, selling_price, transaction_date, transaction_status) VALUES 
+INSERT IGNORE INTO transaction (tenant_id, buyer_id, ticket_id, selling_price, transaction_date, transaction_status) VALUES
 (1, 4, 4, 80.00, '2024-10-21 12:00:00', 1), -- Ticket 4 (SOLD)
 (1, 5, 5, 45.00, '2024-10-21 12:05:00', 1), -- Ticket 5 (USED)
 (2, 4, 9, 75.00, '2024-10-21 12:10:00', 1), -- Ticket 9 (SOLD)
@@ -92,19 +92,7 @@ INSERT INTO transaction (tenant_id, buyer_id, ticket_id, selling_price, transact
 (5, 4, 24, 75.00, '2024-10-21 12:40:00', 1), -- Ticket 24 (SOLD)
 (5, 5, 25, 85.00, '2024-10-21 12:45:00', 1); -- Ticket 25 (USED)
 
-INSERT INTO privacy_settings (user_id, allow_data_sharing, profile_visibility, transaction_history_visibility, allow_marketing_communications) VALUES
-(1, true, 'PUBLIC', true, true),   -- Configurações de privacidade para o Usuário 1
-(2, false, 'PRIVATE', false, false), -- Configurações de privacidade para o Usuário 2
-(3, true, 'FRIENDS_ONLY', true, false), -- Configurações de privacidade para o Usuário 3
-(4, true, 'PUBLIC', false, true),  -- Configurações de privacidade para o Usuário 4
-(5, false, 'PRIVATE', true, false), -- Configurações de privacidade para o Usuário 5
-(6, true, 'PUBLIC', false, true),  -- Configurações de privacidade para o Usuário 6
-(7, true, 'FRIENDS_ONLY', true, true), -- Configurações de privacidade para o Usuário 7
-(8, false, 'PRIVATE', false, false), -- Configurações de privacidade para o Usuário 8
-(9, true, 'PUBLIC', true, true),   -- Configurações de privacidade para o Usuário 9
-(10, false, 'PRIVATE', false, true); -- Configurações de privacidade para o Usuário 10
-
-INSERT INTO notification_preferences (user_id, allow_email_notifications, allow_push_notifications) VALUES
+INSERT IGNORE INTO notification_preferences (user_id, allow_email_notifications, allow_push_notifications) VALUES
 (1, true, true),   -- Preferências de notificação para o Usuário 1
 (2, false, true),  -- Preferências de notificação para o Usuário 2
 (3, true, false),  -- Preferências de notificação para o Usuário 3
@@ -115,19 +103,3 @@ INSERT INTO notification_preferences (user_id, allow_email_notifications, allow_
 (8, true, false),  -- Preferências de notificação para o Usuário 8
 (9, true, true),   -- Preferências de notificação para o Usuário 9
 (10, false, false);-- Preferências de notificação para o Usuário 10
-
-
-UPDATE user
-SET privacy_settings_id = CASE
-    WHEN name = 'User One' THEN 1
-    WHEN name = 'User Two' THEN 2
-    WHEN name = 'User Three' THEN 3
-    WHEN name = 'User Four' THEN 4
-    WHEN name = 'User Five' THEN 5
-    WHEN name = 'User Six' THEN 6
-    WHEN name = 'User Seven' THEN 7
-    WHEN name = 'User Eight' THEN 8
-    WHEN name = 'User Nine' THEN 9
-    WHEN name = 'User Ten' THEN 10
-END
-WHERE name IN ('User One', 'User Two', 'User Three', 'User Four', 'User Five', 'User Six', 'User Seven', 'User Eight', 'User Nine', 'User Ten');

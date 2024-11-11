@@ -8,25 +8,17 @@ import construcao_software.ingresso_back.application.dtos.TransactionDTO;
 import construcao_software.ingresso_back.application.dtos.UserDTO;
 import construcao_software.ingresso_back.application.mappers.EventMapper;
 import construcao_software.ingresso_back.application.mappers.TicketMapper;
-import construcao_software.ingresso_back.application.mappers.TransactionMapper;
 import construcao_software.ingresso_back.application.mappers.UserMapper;
 import construcao_software.ingresso_back.domain.entities.EventEntity;
 import construcao_software.ingresso_back.domain.entities.TicketEntity;
-import construcao_software.ingresso_back.domain.entities.TransactionEntity;
 import construcao_software.ingresso_back.domain.entities.UserEntity;
 import construcao_software.ingresso_back.domain.enums.TicketStatus;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TicketModel;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TransactionModel;
-import construcao_software.ingresso_back.infrastructure.persistence.repository.TicketJpaRepository;
-import lombok.AllArgsConstructor;
+import construcao_software.ingresso_back.adapter.persistence.hybernate.models.TicketModel;
+import construcao_software.ingresso_back.adapter.persistence.repository.TicketJpaRepository;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -40,12 +32,12 @@ public class TicketService {
     private EventMapper eventMapper;
     private UserMapper userMapper;
 
-    public TicketService(TicketJpaRepository repository, 
-                         UserService userService, 
-                         EventService eventService, 
-                         TransactionService transactionService, 
-                         TicketMapper mapper, 
-                         EventMapper eventMapper, 
+    public TicketService(TicketJpaRepository repository,
+                         UserService userService,
+                         EventService eventService,
+                         TransactionService transactionService,
+                         TicketMapper mapper,
+                         EventMapper eventMapper,
                          UserMapper userMapper) {
         this.repository = repository;
         this.userService = userService;
@@ -127,37 +119,42 @@ public class TicketService {
 
         EventEntity eventEntity = eventMapper.toEntity(event);
         UserEntity sellerEntity = userMapper.toEntity(seller);
-        TicketEntity ticket = new TicketEntity(sellerEntity, eventEntity, createTicketDTO.originalPrice(),
-                TicketStatus.AVAILABLE);
+
+        TicketEntity ticket = new TicketEntity();
+        ticket.setOriginalPrice(createTicketDTO.originalPrice());
+        ticket.setEvent(eventEntity);
+        ticket.setSeller(sellerEntity);
+        ticket.setStatus(TicketStatus.AVAILABLE);
+        ticket.setUniqueVerificationCode(UUID.randomUUID().toString());
+
         TicketModel ticketModel = repository.save(mapper.toModel(ticket));
 
         return createTicket(mapper.toDTO(ticketModel));
     }
 
-    public Optional<TicketDTO> validateAndUseTicket(Long ticketId) {
-        return repository.findById(ticketId).map(ticketModel -> {
-            TicketStatus statusAtual = ticketModel.getStatus();
+    public TicketDTO validateAndUseTicket(String ticketCode) {
+        TicketModel ticketModel = repository.findByUniqueVerificationCode(ticketCode)
+                .orElseThrow(() -> new RuntimeException("Ticket not found"));
 
-            // Verifica se o ingresso está com status SOLD
-            if (statusAtual != TicketStatus.SOLD) {
-                throw new RuntimeException("Ingresso não pode ser usado. Status atual: " + statusAtual);
-            }
+        TicketStatus statusAtual = ticketModel.getStatus();
 
-            // Marca o ingresso como USADO
-            ticketModel.setStatus(TicketStatus.USED);
+        // Verifica se o ingresso está com status SOLD
+        if (statusAtual != TicketStatus.SOLD) {
+            throw new RuntimeException("Ingresso não pode ser usado. Status atual: " + statusAtual);
+        }
 
-            // Salva a atualização no banco de dados
-            TicketModel savedTicket = repository.save(ticketModel);
+        // Marca o ingresso como USADO
+        ticketModel.setStatus(TicketStatus.USED);
 
-            // Retorna o DTO atualizado
-            Optional<TicketDTO> ticketDTO = Optional.ofNullable(mapper.toDTO(savedTicket));
-            
-            return ticketDTO;
-        }).orElseThrow(() -> new RuntimeException("Ingresso não encontrado com ID: " + ticketId));
+        // Salva a atualização no banco de dados
+        TicketModel savedTicket = repository.save(ticketModel);
+
+        // Retorna o DTO atualizado
+        return mapper.toDTO(savedTicket);
     }
 
-    public List<TicketDTO> getTicketsByUser(Long userId) {
-        return repository.findByUser(userId).stream()
+    public List<TicketDTO> getTicketsByTenantId(Long userId) {
+        return repository.getAllByTenant_TenantId(userId).stream()
                 .map(mapper::toDTO)
                 .collect(Collectors.toList());
     }

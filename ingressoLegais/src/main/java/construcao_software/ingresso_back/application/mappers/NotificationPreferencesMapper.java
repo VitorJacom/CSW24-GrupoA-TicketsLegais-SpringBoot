@@ -4,7 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import construcao_software.ingresso_back.domain.entities.NotificationPreferencesEntity;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.NotificationPreferencesModel;
+import construcao_software.ingresso_back.adapter.persistence.hybernate.models.NotificationPreferencesModel;
 import construcao_software.ingresso_back.application.dtos.NotificationPreferencesDTO;
 
 @Component
