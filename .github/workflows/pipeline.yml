@@ -22,9 +22,9 @@ jobs:
           MYSQL_DATABASE: ingresso_legais
         options: >-
           --health-cmd="mysqladmin ping -h localhost -u root --password=root_password || exit 1"
-          --health-interval=15s
-          --health-timeout=10s
-          --health-retries=20
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
 
     steps:
       - name: Checkout source code
@@ -48,27 +48,12 @@ jobs:
             sleep 10
           done
 
+      - name: Build Docker image
+        run: docker build -t spring-boot-api-test .
+
       - name: Build and test Spring Boot application
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/ingresso_legais?createDatabaseIfNotExist=true
           SPRING_DATASOURCE_USERNAME: root
           SPRING_DATASOURCE_PASSWORD: root_password
-        run: ./mvnw clean verify
-
-      - name: Check MySQL logs (for debugging)
-        if: failure()
-        run: |
-          echo "MySQL logs for debugging:"
-          docker logs $(docker ps -q -f name=mysql)
-
-      - name: Build Docker image
-        run: docker build -t your_dockerhub_username/spring-boot-api:${{ github.sha }} .
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKER_HUB_USERNAME }}
-          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-
-      - name: Push Docker image
-        run: docker push your_dockerhub_username/spring-boot-api:${{ github.sha }}
+        run: mvn clean verify
