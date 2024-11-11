@@ -4,7 +4,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
 import construcao_software.ingresso_back.domain.entities.UserEntity;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.UserModel;
+import construcao_software.ingresso_back.adapter.persistence.hybernate.models.UserModel;
 import construcao_software.ingresso_back.application.dtos.UserDTO;
 
 @Component

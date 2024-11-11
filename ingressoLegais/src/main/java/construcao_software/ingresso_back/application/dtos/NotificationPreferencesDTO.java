@@ -7,6 +7,6 @@ public class NotificationPreferencesDTO {
     
     private Long preferencesId;
     private UserDTO user;
-    private boolean allowEmailNotifications;
-    private boolean allowPushNotifications;   
+    private Boolean allowEmailNotifications;
+    private Boolean allowPushNotifications;
 }

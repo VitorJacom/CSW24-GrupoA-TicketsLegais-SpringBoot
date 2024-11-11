@@ -2,9 +2,8 @@ package construcao_software.ingresso_back.application.services;
 
 import construcao_software.ingresso_back.application.dtos.EventDTO;
 import construcao_software.ingresso_back.application.mappers.EventMapper;
-import construcao_software.ingresso_back.domain.entities.EventEntity;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.EventModel;
-import construcao_software.ingresso_back.infrastructure.persistence.repository.EventJpaRepository;
+import construcao_software.ingresso_back.adapter.persistence.hybernate.models.EventModel;
+import construcao_software.ingresso_back.adapter.persistence.repository.EventJpaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
