@@ -19,8 +19,6 @@ jobs:
           - 3306:3306
         env:
           MYSQL_ROOT_PASSWORD: root_password
-          MYSQL_USER: root
-          MYSQL_PASSWORD: root_password
           MYSQL_DATABASE: ingresso_legais
         options: >-
           --health-cmd="mysqladmin ping -h localhost -u root --password=root_password || exit 1"
@@ -63,14 +61,14 @@ jobs:
           echo "MySQL logs for debugging:"
           docker logs $(docker ps -q -f name=mysql)
 
-      # - name: Build Docker image
-      #   run: docker build -t your_dockerhub_username/spring-boot-api:${{ github.sha }} .
+      - name: Build Docker image
+        run: docker build -t your_dockerhub_username/spring-boot-api:${{ github.sha }} .
 
-      # - name: Log in to Docker Hub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
-      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
-      # - name: Push Docker image
-      #   run: docker push your_dockerhub_username/spring-boot-api:${{ github.sha }}
+      - name: Push Docker image
+        run: docker push your_dockerhub_username/spring-boot-api:${{ github.sha }}
