@@ -52,7 +52,7 @@ jobs:
         run: docker build -t spring-boot-api-test .
 
       - name: Build and test Spring Boot application
-        working-directory: ./caminho/do/projeto 
+        working-directory: ./ingressoLegais
         env:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/ingresso_legais?createDatabaseIfNotExist=true
           SPRING_DATASOURCE_USERNAME: root
