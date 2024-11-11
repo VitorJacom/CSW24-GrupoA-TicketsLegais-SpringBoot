@@ -3,10 +3,10 @@ name: CI - Build, Test, and Dockerize Spring Boot API
 on:
   push:
     branches:
-      - main
+      - pipeline/docker
   pull_request:
     branches:
-      - main
+      - pipeline/docker
 
 jobs:
   build:
