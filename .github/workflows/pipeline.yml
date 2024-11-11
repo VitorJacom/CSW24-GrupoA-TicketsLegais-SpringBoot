@@ -12,6 +12,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      mysql:
+        image: mysql:8
+        ports:
+          - 3306:3306
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_USER: root
+          MYSQL_PASSWORD: root_password
+          MYSQL_DATABASE: ingresso_legais
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root --password=root_password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
@@ -22,11 +38,22 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Wait for MySQL to be ready
+        run: |
+          until mysqladmin ping -h 127.0.0.1 -u root --password=root_password; do
+            echo "Waiting for MySQL..."
+            sleep 5
+          done
+
       - name: Build and test Spring Boot application
+        env:
+          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/ingresso_legais?createDatabaseIfNotExist=true
+          SPRING_DATASOURCE_USERNAME: root
+          SPRING_DATASOURCE_PASSWORD: root_password
         run: ./mvnw clean verify
 
-      - name: Build Docker image
-        run: docker build -t your_dockerhub_username/spring-boot-api:${{ github.sha }} .
+      # - name: Build Docker image
+      #   run: docker build -t your_dockerhub_username/spring-boot-api:${{ github.sha }} .
 
       # - name: Log in to Docker Hub
       #   uses: docker/login-action@v2
