@@ -1,6 +1,6 @@
 package construcao_software.ingresso_back.domain.entities;
 
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TenantModel;
+import construcao_software.ingresso_back.adapter.persistence.hybernate.models.TenantModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -7,7 +7,7 @@ import lombok.Data;
 public class EventDTO {
  
     private Long eventId;
-    private TenantEntity tenant;
+    private TenantDTO tenant;
     private String eventName;
     private String type;
     private String location;

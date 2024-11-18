@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import construcao_software.ingresso_back.domain.entities.TenantEntity;
-import construcao_software.ingresso_back.infrastructure.persistence.repository.TenantJpaRepository;
+import construcao_software.ingresso_back.adapter.persistence.repository.TenantJpaRepository;
 import construcao_software.ingresso_back.application.mappers.TenantMapper;
 
 @Service

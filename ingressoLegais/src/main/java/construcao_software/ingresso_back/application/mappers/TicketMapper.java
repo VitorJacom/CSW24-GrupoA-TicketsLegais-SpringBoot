@@ -1,11 +1,12 @@
 package construcao_software.ingresso_back.application.mappers;
 
+import construcao_software.ingresso_back.application.dtos.CreateTicketDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import construcao_software.ingresso_back.domain.entities.TicketEntity;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.TicketModel;
+import construcao_software.ingresso_back.adapter.persistence.hybernate.models.TicketModel;
 import construcao_software.ingresso_back.application.dtos.EventDTO;
 import construcao_software.ingresso_back.application.dtos.TicketDTO;
 

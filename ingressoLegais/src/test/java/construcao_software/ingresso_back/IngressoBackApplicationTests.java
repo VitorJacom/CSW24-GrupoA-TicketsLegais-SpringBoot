@@ -5,15 +5,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 
+import construcao_software.ingresso_back.adapter.persistence.hybernate.models.UserModel;
+import construcao_software.ingresso_back.adapter.persistence.repository.UserJpaRepository;
 import construcao_software.ingresso_back.application.dtos.UserDTO;
 import construcao_software.ingresso_back.application.services.UserService;
-import construcao_software.ingresso_back.domain.entities.UserEntity;
-import construcao_software.ingresso_back.infrastructure.persistence.hybernate.models.UserModel;
-import construcao_software.ingresso_back.infrastructure.persistence.repository.UserJpaRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
