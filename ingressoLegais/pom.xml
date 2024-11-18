@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>construcao_software</groupId>
 	<artifactId>ingresso_back</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>ingresso_back</name>
 	<description>Demo project for Spring Boot</description>
 	<url />
@@ -103,6 +103,12 @@
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-lambda-java-core</artifactId>
 			<version>1.2.2</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 	</dependencies>

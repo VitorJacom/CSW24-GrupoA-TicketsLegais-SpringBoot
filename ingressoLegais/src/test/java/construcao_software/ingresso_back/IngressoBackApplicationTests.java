@@ -1,34 +1,40 @@
 package construcao_software.ingresso_back;
-
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import construcao_software.ingresso_back.adapter.persistence.hybernate.models.UserModel;
 import construcao_software.ingresso_back.adapter.persistence.repository.UserJpaRepository;
 import construcao_software.ingresso_back.application.dtos.UserDTO;
+import construcao_software.ingresso_back.application.mappers.UserMapper;
 import construcao_software.ingresso_back.application.services.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.verify;
 
 import java.util.Optional;
 
-@SpringBootTest
-@ComponentScan(basePackages = "construcao_software.ingresso_back")
+@ExtendWith(MockitoExtension.class)
 class IngressoBackApplicationTests {
 
-    @MockBean
+    @Mock
     private UserJpaRepository userJpaRepository;
 
-    @Autowired
+    @Mock
+    private UserMapper userMapper; // Mock do UserMapper
+
+    @InjectMocks
     private UserService userService;
 
-	@Test
-	void contextLoads() {
+    @Test
+    void contextLoads() {
+        // Mock do comportamento do userMapper
+        when(userMapper.toDTO(any(UserModel.class))).thenReturn(new UserDTO());
+
         // Simulação de comportamento do método findById no mock
         when(userJpaRepository.findById(1L)).thenReturn(Optional.of(new UserModel()));
 
@@ -41,5 +47,5 @@ class IngressoBackApplicationTests {
         // Verificação do uso do método findById no mock
         verify(userJpaRepository).findById(1L);
     }
-	}
+}
 

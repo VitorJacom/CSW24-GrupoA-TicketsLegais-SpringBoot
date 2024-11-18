@@ -13,7 +13,6 @@ import construcao_software.ingresso_back.domain.enums.TransactionStatus;
 import construcao_software.ingresso_back.adapter.persistence.hybernate.models.TransactionModel;
 import construcao_software.ingresso_back.adapter.persistence.repository.TransactionJpaRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
