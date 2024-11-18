@@ -2,12 +2,10 @@ provider "aws" {
   region = "us-east-1"
 }
 
-# Obtém a VPC padrão
 data "aws_vpc" "default" {
   default = true
 }
 
-# Obtém todas as subnets associadas à VPC padrão
 data "aws_subnets" "default" {
   filter {
     name   = "vpc-id"
@@ -19,7 +17,6 @@ data "aws_subnets" "default" {
   }
 }
 
-# Criar a instância do banco de dados MySQL
 resource "aws_db_instance" "my_db" {
   allocated_storage    = 20
   engine               = "mysql"
@@ -37,7 +34,6 @@ resource "aws_db_instance" "my_db" {
   db_subnet_group_name = aws_db_subnet_group.default.name
 }
 
-# Criar o grupo de sub-rede (Subnets) associadas à VPC padrão
 resource "aws_db_subnet_group" "default" {
   name       = "default-db-subnet-group"
   subnet_ids = data.aws_subnets.default.ids  # Aqui usamos a lista de subnets
@@ -45,4 +41,9 @@ resource "aws_db_subnet_group" "default" {
   tags = {
     Name = "Default DB Subnet Group"
   }
+}
+
+resource "aws_api_gateway_rest_api" "api" {
+  name        = "tickets-legais-api"
+  description = "API Gateway para a aplicação Tickets Legais"
 }
