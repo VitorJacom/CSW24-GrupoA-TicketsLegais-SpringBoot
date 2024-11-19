@@ -31,14 +31,14 @@ public class TicketMapper {
     }
 
     // Convert Entity to Model
-    public TicketModel toModel(TicketEntity entity) {
+    public TicketModel toModelFromEntity(TicketEntity entity) {
         return modelMapper.map(entity, TicketModel.class);
     }
-
-    // Convert Entity to Model
-    public TicketModel toModel(TicketDTO dto) {
+    
+    public TicketModel toModelFromDTO(TicketDTO dto) {
         return modelMapper.map(dto, TicketModel.class);
     }
+    
     
 
     // Convert Entity to DTO

@@ -1,11 +1,6 @@
 package construcao_software.ingresso_back.application.services;
 
-import construcao_software.ingresso_back.application.dtos.BuyTicketsDTO;
-import construcao_software.ingresso_back.application.dtos.CreateTicketDTO;
-import construcao_software.ingresso_back.application.dtos.EventDTO;
-import construcao_software.ingresso_back.application.dtos.TicketDTO;
-import construcao_software.ingresso_back.application.dtos.TransactionDTO;
-import construcao_software.ingresso_back.application.dtos.UserDTO;
+import construcao_software.ingresso_back.application.dtos.*;
 import construcao_software.ingresso_back.application.mappers.EventMapper;
 import construcao_software.ingresso_back.application.mappers.TicketMapper;
 import construcao_software.ingresso_back.application.mappers.UserMapper;
@@ -15,7 +10,6 @@ import construcao_software.ingresso_back.domain.entities.UserEntity;
 import construcao_software.ingresso_back.domain.enums.TicketStatus;
 import construcao_software.ingresso_back.adapter.persistence.hybernate.models.TicketModel;
 import construcao_software.ingresso_back.adapter.persistence.repository.TicketJpaRepository;
-
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -24,13 +18,13 @@ import java.util.stream.Collectors;
 @Service
 public class TicketService {
 
-    private TicketJpaRepository repository;
-    private UserService userService;
-    private EventService eventService;
-    private TransactionService transactionService;
-    private TicketMapper mapper;
-    private EventMapper eventMapper;
-    private UserMapper userMapper;
+    private final TicketJpaRepository repository;
+    private final UserService userService;
+    private final EventService eventService;
+    private final TransactionService transactionService;
+    private final TicketMapper mapper;
+    private final EventMapper eventMapper;
+    private final UserMapper userMapper;
 
     public TicketService(TicketJpaRepository repository,
                          UserService userService,
@@ -55,7 +49,7 @@ public class TicketService {
     }
 
     public TicketDTO createTicket(TicketDTO ticket) {
-        TicketModel saved = repository.save(mapper.toModel(ticket));
+        TicketModel saved = repository.save(mapper.toModelFromDTO(ticket));
         return mapper.toDTO(saved);
     }
 
@@ -96,12 +90,11 @@ public class TicketService {
             ticketDTO.setTenant(userDTO.getTenant());
 
             ticketDTOs.add(ticketDTO);
-
         }
 
         ArrayList<TicketDTO> saved = new ArrayList<>();
         for (TicketDTO save : ticketDTOs) {
-            TicketModel ticketModel = mapper.toModel(save);
+            TicketModel ticketModel = mapper.toModelFromDTO(save);
             ticketModel = repository.save(ticketModel);
             saved.add(mapper.toDTO(ticketModel));
         }
@@ -127,7 +120,7 @@ public class TicketService {
         ticket.setStatus(TicketStatus.AVAILABLE);
         ticket.setUniqueVerificationCode(UUID.randomUUID().toString());
 
-        TicketModel ticketModel = repository.save(mapper.toModel(ticket));
+        TicketModel ticketModel = repository.save(mapper.toModelFromEntity(ticket));
 
         return createTicket(mapper.toDTO(ticketModel));
     }
@@ -138,18 +131,14 @@ public class TicketService {
 
         TicketStatus statusAtual = ticketModel.getStatus();
 
-        // Verifica se o ingresso está com status SOLD
         if (statusAtual != TicketStatus.SOLD) {
             throw new RuntimeException("Ingresso não pode ser usado. Status atual: " + statusAtual);
         }
 
-        // Marca o ingresso como USADO
         ticketModel.setStatus(TicketStatus.USED);
 
-        // Salva a atualização no banco de dados
         TicketModel savedTicket = repository.save(ticketModel);
 
-        // Retorna o DTO atualizado
         return mapper.toDTO(savedTicket);
     }
 
