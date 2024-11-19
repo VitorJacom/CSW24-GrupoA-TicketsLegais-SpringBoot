@@ -164,18 +164,3 @@ resource "aws_api_gateway_deployment" "deployment" {
   rest_api_id = aws_api_gateway_rest_api.api.id
 }
 
-# Recurso para o estágio 'prod'
-resource "aws_api_gateway_stage" "prod" {
-  stage_name    = "prod"
-  rest_api_id   = aws_api_gateway_rest_api.api.id
-  deployment_id = aws_api_gateway_deployment.deployment.id
-
-  variables = {
-    # Adicione variáveis de estágio aqui, se necessário
-  }
-}
-
-# Output do endpoint da API
-output "api_invoke_url" {
-  value = "https://${aws_api_gateway_rest_api.api.id}.execute-api.${var.aws_region}.amazonaws.com/prod"
-}
