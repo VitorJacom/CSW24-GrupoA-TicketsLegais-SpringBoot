@@ -144,7 +144,7 @@ build:
         name: ingress-back-jar
         path: ./ingressoLegais/target/ingresso_back-1.0.0.jar
 
-  deploy:
+deploy:
     name: Deploy to AWS Lambda and API Gateway
     runs-on: ubuntu-latest
     needs: [terraform, build]  # Depende dos jobs de Terraform e Build
