@@ -18,14 +18,6 @@ variable "db_username" {
   default     = "admin"
 }
 
-variable "db_password" {
-  description = "Senha do banco de dados"
-  type        = string
-  default     = "admin123"
-  sensitive   = true
-}
-
-# Se estiver usando Secrets Manager
 variable "db_password_secret_arn" {
   description = "ARN do segredo no AWS Secrets Manager para a senha do banco de dados"
   type        = string

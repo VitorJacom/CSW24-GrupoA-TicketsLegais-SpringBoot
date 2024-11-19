@@ -87,13 +87,13 @@ resource "aws_s3_bucket_policy" "lambda_bucket_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid    = "AllowLambdaServiceToReadCode"
-        Effect = "Allow"
+        Sid       = "AllowLambdaServiceToReadCode"
+        Effect    = "Allow"
         Principal = {
           Service = "lambda.amazonaws.com"
         }
-        Action   = "s3:GetObject"
-        Resource = "${aws_s3_bucket.lambda_bucket.arn}/*"
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.lambda_bucket.arn}/*"
       }
     ]
   })
@@ -148,10 +148,10 @@ resource "aws_api_gateway_method" "any_method" {
 
 # Adicionar integração MOCK para permitir o deployment inicial
 resource "aws_api_gateway_integration" "proxy_mock_integration" {
-  rest_api_id = aws_api_gateway_rest_api.api.id
-  resource_id = aws_api_gateway_resource.proxy.id
-  http_method = aws_api_gateway_method.any_method.http_method
-  type        = "MOCK"
+  rest_api_id       = aws_api_gateway_rest_api.api.id
+  resource_id       = aws_api_gateway_resource.proxy.id
+  http_method       = aws_api_gateway_method.any_method.http_method
+  type              = "MOCK"
   request_templates = {
     "application/json" = jsonencode({})
   }
