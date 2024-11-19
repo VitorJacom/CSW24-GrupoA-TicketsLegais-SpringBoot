@@ -179,24 +179,3 @@ resource "aws_api_gateway_stage" "prod" {
 output "api_invoke_url" {
   value = "https://${aws_api_gateway_rest_api.api.id}.execute-api.${var.aws_region}.amazonaws.com/prod"
 }
-
-# Outputs adicionais para o GitHub Actions
-output "lambda_bucket_name" {
-  value = aws_s3_bucket.lambda_bucket.id
-}
-
-output "lambda_bucket_arn" {
-  value = aws_s3_bucket.lambda_bucket.arn
-}
-
-output "api_id" {
-  value = aws_api_gateway_rest_api.api.id
-}
-
-output "proxy_resource_id" {
-  value = aws_api_gateway_resource.proxy.id
-}
-
-output "account_id" {
-  value = data.aws_caller_identity.current.account_id
-}
