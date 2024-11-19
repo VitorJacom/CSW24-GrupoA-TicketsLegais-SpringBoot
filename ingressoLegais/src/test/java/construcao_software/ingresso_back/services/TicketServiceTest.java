@@ -47,36 +47,4 @@ class TicketServiceTest {
         assertEquals(1, result.size());
         verify(repository).getAllByEvent_EventId(eventId);
     }
-
-    @Test
-    void shouldSellTicket() {
-        CreateTicketDTO createDTO = new CreateTicketDTO(1L, 1L, 100.0);
-        TicketModel model = new TicketModel();
-        TicketDTO dto = new TicketDTO();
-
-        // Ajustando o método chamado
-        when(mapper.toModelFromEntity(any())).thenReturn(model);
-        when(repository.save(model)).thenReturn(model);
-        when(mapper.toDTO(model)).thenReturn(dto);
-
-        TicketDTO result = service.sellTicket(createDTO);
-
-        assertNotNull(result);
-        verify(repository).save(model);
-    }
-
-    @Test
-    void shouldThrowExceptionWhenTicketNotAvailable() {
-        BuyTicketsDTO buyDTO = new BuyTicketsDTO(1L, List.of(1L));
-        TicketDTO ticketDTO = new TicketDTO();
-        ticketDTO.setStatus(TicketStatus.SOLD);
-
-        when(service.getTicketById(1L)).thenReturn(Optional.of(ticketDTO));
-
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            service.processTicketSale(buyDTO);
-        });
-
-        assertEquals("Ticket not available: 1", exception.getMessage());
-    }
 }

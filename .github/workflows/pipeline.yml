@@ -3,10 +3,10 @@ name: CI/CD Pipeline - Build, Test, Dockerize, and Deploy Spring Boot API
 on:
   push:
     branches:
-      - pipeline/docker
+      - main
   pull_request:
     branches:
-      - pipeline/docker
+      - main
 
 jobs:
   terraform:
@@ -85,12 +85,28 @@ jobs:
   build:
     name: Build and Test Spring Boot Application
     runs-on: ubuntu-latest
-    needs: terraform  # Depende do job de Terraform
+
+    services:
+      mysql:
+        image: mysql:8.0
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -u root --password=root_password"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+        env:
+          MYSQL_ROOT_PASSWORD: root_password
+          MYSQL_DATABASE: ingresso_legais
 
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v3
 
+      - name: Set execute permissions for Maven Wrapper
+        run: chmod +x ./mvnw
+        
       - name: Cache Maven Packages
         uses: actions/cache@v3
         with:
@@ -123,7 +139,7 @@ jobs:
       - name: Build and Test Application
         working-directory: ./ingressoLegais
         env:
-          SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/ingresso_legais?createDatabaseIfNotExist=true
+          SPRING_DATASOURCE_URL: jdbc:mysql://127.0.0.1:3306/ingresso_legais?createDatabaseIfNotExist=true
           SPRING_DATASOURCE_USERNAME: root
           SPRING_DATASOURCE_PASSWORD: root_password
         run: ./mvnw clean verify -X

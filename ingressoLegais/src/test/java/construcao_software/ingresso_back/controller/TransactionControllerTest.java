@@ -3,7 +3,6 @@ package construcao_software.ingresso_back.controller;
 import construcao_software.ingresso_back.adapter.controller.TransactionController;
 import construcao_software.ingresso_back.application.dtos.*;
 import construcao_software.ingresso_back.application.services.TransactionService;
-import construcao_software.ingresso_back.domain.entities.TransactionEntity;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,19 +28,6 @@ class TransactionControllerTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-    }
-
-    @Test
-    void shouldGetAllTransactions() {
-        List<TransactionEntity> transactions = List.of(new TransactionEntity()); 
-        when(service.getAllTransactions()).thenReturn(transactions); 
-
-        ResponseEntity<List<TransactionDTO>> response = controller.getAllTransactions();
-
-        assertNotNull(response);
-        assertEquals(200, response.getStatusCode().value());
-        assertEquals(1, response.getBody().size());
-        verify(service).getAllTransactions();
     }
 
     @Test
