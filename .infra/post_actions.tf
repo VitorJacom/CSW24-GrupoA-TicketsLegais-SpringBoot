@@ -1,4 +1,4 @@
-# Este arquivo pode ser usado para qualquer atualização adicional após o GitHub Actions
+# post_actions.tf
 
 resource "aws_api_gateway_stage" "prod" {
   stage_name    = "prod"
@@ -9,4 +9,3 @@ resource "aws_api_gateway_stage" "prod" {
     # Adicione variáveis de estágio aqui, se necessário
   }
 }
-

@@ -1,5 +1,11 @@
+# outputs.tf
+
 output "lambda_bucket_name" {
   value = aws_s3_bucket.lambda_bucket.id
+}
+
+output "lambda_bucket_arn" {
+  value = aws_s3_bucket.lambda_bucket.arn
 }
 
 output "api_id" {
@@ -27,7 +33,12 @@ output "my_db_username" {
 }
 
 output "my_db_password" {
-  value = aws_db_instance.my_db.password
+  value     = aws_db_instance.my_db.password
+  sensitive = true
+}
+
+output "lambda_role_arn" {
+  value = aws_iam_role.lambda_role.arn
 }
 
 output "api_invoke_url" {

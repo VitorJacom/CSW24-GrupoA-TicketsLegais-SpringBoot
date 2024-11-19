@@ -1,9 +1,7 @@
-provider "aws" {
-  region = "us-east-1"
-}
+# main.tf
 
-variable "aws_region" {
-  default = "us-east-1"
+provider "aws" {
+  region = var.aws_region
 }
 
 data "aws_vpc" "default" {
@@ -89,13 +87,13 @@ resource "aws_s3_bucket_policy" "lambda_bucket_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Sid       = "AllowLambdaServiceToReadCode"
-        Effect    = "Allow"
+        Sid    = "AllowLambdaServiceToReadCode"
+        Effect = "Allow"
         Principal = {
           Service = "lambda.amazonaws.com"
         }
-        Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.lambda_bucket.arn}/*"
+        Action   = "s3:GetObject"
+        Resource = "${aws_s3_bucket.lambda_bucket.arn}/*"
       }
     ]
   })
@@ -110,14 +108,18 @@ resource "aws_db_subnet_group" "default" {
   }
 }
 
+data "aws_secretsmanager_secret_version" "db_password" {
+  secret_id = var.db_password_secret_arn
+}
+
 resource "aws_db_instance" "my_db" {
   allocated_storage    = 20
   engine               = "mysql"
   engine_version       = "8.0"
   instance_class       = "db.t3.micro"
-  db_name              = "mydatabase"
-  username             = "admin"
-  password             = "admin123"
+  db_name              = var.db_name
+  username             = var.db_username
+  password             = jsondecode(data.aws_secretsmanager_secret_version.db_password.secret_string).password
   parameter_group_name = "default.mysql8.0"
   skip_final_snapshot  = true
 
@@ -146,10 +148,10 @@ resource "aws_api_gateway_method" "any_method" {
 
 # Adicionar integração MOCK para permitir o deployment inicial
 resource "aws_api_gateway_integration" "proxy_mock_integration" {
-  rest_api_id       = aws_api_gateway_rest_api.api.id
-  resource_id       = aws_api_gateway_resource.proxy.id
-  http_method       = aws_api_gateway_method.any_method.http_method
-  type              = "MOCK"
+  rest_api_id = aws_api_gateway_rest_api.api.id
+  resource_id = aws_api_gateway_resource.proxy.id
+  http_method = aws_api_gateway_method.any_method.http_method
+  type        = "MOCK"
   request_templates = {
     "application/json" = jsonencode({})
   }
@@ -164,3 +166,63 @@ resource "aws_api_gateway_deployment" "deployment" {
   rest_api_id = aws_api_gateway_rest_api.api.id
 }
 
+# Definição da Role IAM para a Lambda
+resource "aws_iam_role" "lambda_role" {
+  name = "c126703a-LambdaSLRRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+    }]
+  })
+
+  tags = {
+    Name        = "Lambda Execution Role"
+    Environment = "Development"
+  }
+}
+
+resource "aws_iam_policy" "lambda_policy" {
+  name        = "LambdaPolicy"
+  description = "Policy for Lambda to access S3 and RDS"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "s3:GetObject"
+        ],
+        Resource = "${aws_s3_bucket.lambda_bucket.arn}/*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "logs:CreateLogGroup",
+          "logs:CreateLogStream",
+          "logs:PutLogEvents"
+        ],
+        Resource = "arn:aws:logs:*:*:*"
+      },
+      {
+        Effect = "Allow",
+        Action = [
+          "rds:DescribeDBInstances",
+          "rds:Connect"
+        ],
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "lambda_role_policy_attach" {
+  role       = aws_iam_role.lambda_role.name
+  policy_arn = aws_iam_policy.lambda_policy.arn
+}
