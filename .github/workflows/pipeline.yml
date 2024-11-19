@@ -13,6 +13,17 @@ jobs:
     name: Setup Infrastructure with Terraform
     runs-on: ubuntu-latest
 
+    outputs:
+      lambda_bucket_name: ${{ steps.capture_outputs.outputs.lambda_bucket_name }}
+      api_id: ${{ steps.capture_outputs.outputs.api_id }}
+      proxy_resource_id: ${{ steps.capture_outputs.outputs.proxy_resource_id }}
+      account_id: ${{ steps.capture_outputs.outputs.account_id }}
+      db_address: ${{ steps.capture_outputs.outputs.db_address }}
+      db_name: ${{ steps.capture_outputs.outputs.db_name }}
+      db_username: ${{ steps.capture_outputs.outputs.db_username }}
+      db_password: ${{ steps.capture_outputs.outputs.db_password }}
+      lambda_role_arn: ${{ steps.capture_outputs.outputs.lambda_role_arn }}
+
     steps:
       - name: Checkout Source Code
         uses: actions/checkout@v3
@@ -36,52 +47,30 @@ jobs:
 
       - name: Terraform Plan
         working-directory: ./.infra
-        run: terraform plan -out=tfplan
+        env:
+          DB_PASSWORD_SECRET_ARN: ${{ secrets.DB_PASSWORD_SECRET_ARN }}
+        run: terraform plan -var="db_password_secret_arn=$DB_PASSWORD_SECRET_ARN" -out=tfplan
 
       - name: Terraform Apply
         working-directory: ./.infra
+        env:
+          DB_PASSWORD_SECRET_ARN: ${{ secrets.DB_PASSWORD_SECRET_ARN }}
         run: terraform apply -auto-approve tfplan
 
       - name: Capture Terraform Outputs
-        id: terraform_outputs
+        id: capture_outputs
         working-directory: ./.infra
         run: |
-          echo "Fetching Terraform outputs..."
           terraform_output=$(terraform output -json)
-          echo "terraform_output=$terraform_output" >> $GITHUB_ENV
-
-      - name: Set Terraform Outputs as Environment Variables
-        run: |
-          export LAMBDA_BUCKET_NAME=$(echo $terraform_output | jq -r '.lambda_bucket_name.value')
-          export API_ID=$(echo $terraform_output | jq -r '.api_id.value')
-          export PROXY_RESOURCE_ID=$(echo $terraform_output | jq -r '.proxy_resource_id.value')
-          export ACCOUNT_ID=$(echo $terraform_output | jq -r '.account_id.value')
-          export DB_ADDRESS=$(echo $terraform_output | jq -r '.my_db_address.value')
-          export DB_NAME=$(echo $terraform_output | jq -r '.my_db_name.value')
-          export DB_USERNAME=$(echo $terraform_output | jq -r '.my_db_username.value')
-          export DB_PASSWORD=$(echo $terraform_output | jq -r '.my_db_password.value')
-          export LAMBDA_ROLE_ARN=$(echo $terraform_output | jq -r '.lambda_role_arn.value')
-
-          echo "LAMBDA_BUCKET_NAME=$LAMBDA_BUCKET_NAME" >> $GITHUB_ENV
-          echo "API_ID=$API_ID" >> $GITHUB_ENV
-          echo "PROXY_RESOURCE_ID=$PROXY_RESOURCE_ID" >> $GITHUB_ENV
-          echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
-          echo "DB_ADDRESS=$DB_ADDRESS" >> $GITHUB_ENV
-          echo "DB_NAME=$DB_NAME" >> $GITHUB_ENV
-          echo "DB_USERNAME=$DB_USERNAME" >> $GITHUB_ENV
-          echo "DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
-          echo "LAMBDA_ROLE_ARN=$LAMBDA_ROLE_ARN" >> $GITHUB_ENV
-
-    outputs:
-      lambda_bucket_name: ${{ env.LAMBDA_BUCKET_NAME }}
-      api_id: ${{ env.API_ID }}
-      proxy_resource_id: ${{ env.PROXY_RESOURCE_ID }}
-      account_id: ${{ env.ACCOUNT_ID }}
-      db_address: ${{ env.DB_ADDRESS }}
-      db_name: ${{ env.DB_NAME }}
-      db_username: ${{ env.DB_USERNAME }}
-      db_password: ${{ env.DB_PASSWORD }}
-      lambda_role_arn: ${{ env.LAMBDA_ROLE_ARN }}
+          echo "lambda_bucket_name=$(echo $terraform_output | jq -r '.lambda_bucket_name.value')" >> $GITHUB_OUTPUT
+          echo "api_id=$(echo $terraform_output | jq -r '.api_id.value')" >> $GITHUB_OUTPUT
+          echo "proxy_resource_id=$(echo $terraform_output | jq -r '.proxy_resource_id.value')" >> $GITHUB_OUTPUT
+          echo "account_id=$(echo $terraform_output | jq -r '.account_id.value')" >> $GITHUB_OUTPUT
+          echo "db_address=$(echo $terraform_output | jq -r '.my_db_address.value')" >> $GITHUB_OUTPUT
+          echo "db_name=$(echo $terraform_output | jq -r '.my_db_name.value')" >> $GITHUB_OUTPUT
+          echo "db_username=$(echo $terraform_output | jq -r '.my_db_username.value')" >> $GITHUB_OUTPUT
+          echo "db_password=$(echo $terraform_output | jq -r '.my_db_password.value')" >> $GITHUB_OUTPUT
+          echo "lambda_role_arn=$(echo $terraform_output | jq -r '.lambda_role_arn.value')" >> $GITHUB_OUTPUT
 
   build:
     name: Build and Test Spring Boot Application
@@ -159,19 +148,19 @@ jobs:
 
       - name: Upload JAR to S3
         run: |
-          aws s3 cp ingressoLegais/target/ingresso_back-1.0.0.jar s3://$LAMBDA_BUCKET_NAME/ingresso_back-1.0.0.jar
+          aws s3 cp ingressoLegais/target/ingresso_back-1.0.0.jar s3://${{ needs.terraform.outputs.lambda_bucket_name }}/ingresso_back-1.0.0.jar
 
       - name: Create or Update Lambda Function
         run: |
           FUNCTION_NAME="tickets-legais-lambda"
-          S3_BUCKET=$LAMBDA_BUCKET_NAME
+          S3_BUCKET=${{ needs.terraform.outputs.lambda_bucket_name }}
           S3_KEY="ingresso_back-1.0.0.jar"
-          ROLE_ARN=$LAMBDA_ROLE_ARN
+          ROLE_ARN=${{ needs.terraform.outputs.lambda_role_arn }}
           HANDLER="construcao_software.ingresso_back.adapter.handler.LambdaHandler"
           RUNTIME="java11"
           MEMORY_SIZE=1024
           TIMEOUT=30
-          ENV_VARS="{\"SPRING_DATASOURCE_URL\":\"jdbc:mysql://$DB_ADDRESS:3306/$DB_NAME\",\"SPRING_DATASOURCE_USERNAME\":\"$DB_USERNAME\",\"SPRING_DATASOURCE_PASSWORD\":\"$DB_PASSWORD\"}"
+          ENV_VARS="{\"SPRING_DATASOURCE_URL\":\"jdbc:mysql://${{ needs.terraform.outputs.db_address }}:3306/${{ needs.terraform.outputs.db_name }}\",\"SPRING_DATASOURCE_USERNAME\":\"${{ needs.terraform.outputs.db_username }}\",\"SPRING_DATASOURCE_PASSWORD\":\"${{ needs.terraform.outputs.db_password }}\"}"
 
           if aws lambda get-function --function-name $FUNCTION_NAME > /dev/null 2>&1; then
             echo "Updating existing Lambda function..."
@@ -195,7 +184,7 @@ jobs:
       - name: Grant API Gateway Permission to Invoke Lambda
         run: |
           FUNCTION_NAME="tickets-legais-lambda"
-          SOURCE_ARN="arn:aws:apigateway:us-east-1::/restapis/$API_ID/stages/prod/*/*"
+          SOURCE_ARN="arn:aws:apigateway:us-east-1::/restapis/${{ needs.terraform.outputs.api_id }}/stages/prod/*/*"
 
           aws lambda add-permission \
             --function-name $FUNCTION_NAME \
@@ -207,11 +196,11 @@ jobs:
       - name: Update API Gateway Integration
         run: |
           FUNCTION_NAME="tickets-legais-lambda"
-          URI="arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:$ACCOUNT_ID:function:$FUNCTION_NAME/invocations"
+          URI="arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:${{ needs.terraform.outputs.account_id }}:function:$FUNCTION_NAME/invocations"
 
           aws api gateway put-integration \
-            --rest-api-id $API_ID \
-            --resource-id $PROXY_RESOURCE_ID \
+            --rest-api-id ${{ needs.terraform.outputs.api_id }} \
+            --resource-id ${{ needs.terraform.outputs.proxy_resource_id }} \
             --http-method ANY \
             --type AWS_PROXY \
             --integration-http-method POST \
@@ -220,7 +209,7 @@ jobs:
       - name: Deploy API Gateway
         run: |
           aws api gateway create-deployment \
-            --rest-api-id $API_ID \
+            --rest-api-id ${{ needs.terraform.outputs.api_id }} \
             --stage-name prod
 
       - name: Notify Deployment Success (Optional)
@@ -229,7 +218,7 @@ jobs:
         with:
           payload: |
             {
-              "text": "Deploy da Lambda concluído com sucesso! Endpoint: https://$API_ID.execute-api.us-east-1.amazonaws.com/prod"
+              "text": "Deploy da Lambda concluído com sucesso! Endpoint: https://${{ needs.terraform.outputs.api_id }}.execute-api.us-east-1.amazonaws.com/prod"
             }
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
