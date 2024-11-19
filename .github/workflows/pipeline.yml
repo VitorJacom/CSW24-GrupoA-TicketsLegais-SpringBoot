@@ -1,4 +1,4 @@
-name: CI - Build, Test, and Dockerize Spring Boot API
+name: CI - Build, Test, Dockerize and Deploy Spring Boot API
 
 on:
   push:
@@ -9,7 +9,7 @@ on:
       - pipeline/docker
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     services:
@@ -29,6 +29,59 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v3
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v2
+        with:
+          terraform_version: 1.5.0  # Especifique a versão do Terraform que você está utilizando
+
+      - name: Terraform Init
+        working-directory: ./.infra  # Diretório onde está seu código Terraform
+        run: terraform init
+
+      - name: Terraform Format
+        working-directory: ./.infra
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        working-directory: ./.infra
+        run: terraform validate
+
+      - name: Terraform Plan
+        working-directory: ./.infra
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        working-directory: ./.infra
+        run: terraform apply -auto-approve tfplan
+
+      - name: Capture Terraform Outputs
+        id: terraform_outputs
+        working-directory: ./.infra
+        run: |
+          echo "Fetching Terraform outputs..."
+          terraform_output=$(terraform output -json)
+          echo "terraform_output=$terraform_output" >> $GITHUB_ENV
+
+      - name: Set Terraform Outputs as Environment Variables
+        run: |
+          export LAMBDA_BUCKET_NAME=$(echo $terraform_output | jq -r '.lambda_bucket_name.value')
+          export API_ID=$(echo $terraform_output | jq -r '.api_id.value')
+          export PROXY_RESOURCE_ID=$(echo $terraform_output | jq -r '.proxy_resource_id.value')
+          export ACCOUNT_ID=$(echo $terraform_output | jq -r '.account_id.value')
+          export DB_ADDRESS=$(echo $terraform_output | jq -r '.my_db_address.value')
+          export DB_NAME=$(echo $terraform_output | jq -r '.my_db_name.value')
+          export DB_USERNAME=$(echo $terraform_output | jq -r '.my_db_username.value')
+          export DB_PASSWORD=$(echo $terraform_output | jq -r '.my_db_password.value')
+
+          echo "LAMBDA_BUCKET_NAME=$LAMBDA_BUCKET_NAME" >> $GITHUB_ENV
+          echo "API_ID=$API_ID" >> $GITHUB_ENV
+          echo "PROXY_RESOURCE_ID=$PROXY_RESOURCE_ID" >> $GITHUB_ENV
+          echo "ACCOUNT_ID=$ACCOUNT_ID" >> $GITHUB_ENV
+          echo "DB_ADDRESS=$DB_ADDRESS" >> $GITHUB_ENV
+          echo "DB_NAME=$DB_NAME" >> $GITHUB_ENV
+          echo "DB_USERNAME=$DB_USERNAME" >> $GITHUB_ENV
+          echo "DB_PASSWORD=$DB_PASSWORD" >> $GITHUB_ENV
 
       - name: Set up JDK 17
         uses: actions/setup-java@v3
@@ -57,4 +110,80 @@ jobs:
           SPRING_DATASOURCE_URL: jdbc:mysql://localhost:3306/ingresso_legais?createDatabaseIfNotExist=true
           SPRING_DATASOURCE_USERNAME: root
           SPRING_DATASOURCE_PASSWORD: root_password
-        run: mvn clean verify -X
+        run: ./mvnw clean verify -X
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1  # Altere para sua região
+
+      - name: Upload JAR to S3
+        run: |
+          aws s3 cp ingressoLegais/target/ingresso_back-1.0.0.jar s3://$LAMBDA_BUCKET_NAME/ingresso_back-1.0.0.jar
+
+      - name: Create or Update Lambda Function
+        run: |
+          FUNCTION_NAME="tickets-legais-lambda"
+          S3_BUCKET=$LAMBDA_BUCKET_NAME
+          S3_KEY="ingresso_back-1.0.0.jar"
+          ROLE_ARN="arn:aws:iam::$ACCOUNT_ID:role/c126703a-LambdaSLRRole"
+          HANDLER="construcao_software.ingresso_back.adapter.handler.LambdaHandler"
+          RUNTIME="java11"
+          MEMORY_SIZE=1024
+          TIMEOUT=30
+          ENV_VARS="{\"SPRING_DATASOURCE_URL\":\"jdbc:mysql://$DB_ADDRESS:3306/$DB_NAME\",\"SPRING_DATASOURCE_USERNAME\":\"$DB_USERNAME\",\"SPRING_DATASOURCE_PASSWORD\":\"$DB_PASSWORD\"}"
+
+          if aws lambda get-function --function-name $FUNCTION_NAME > /dev/null 2>&1; then
+            echo "Updating existing Lambda function..."
+            aws lambda update-function-code \
+              --function-name $FUNCTION_NAME \
+              --s3-bucket $S3_BUCKET \
+              --s3-key $S3_KEY
+          else
+            echo "Creating new Lambda function..."
+            aws lambda create-function \
+              --function-name $FUNCTION_NAME \
+              --runtime $RUNTIME \
+              --role $ROLE_ARN \
+              --handler $HANDLER \
+              --code S3Bucket=$S3_BUCKET,S3Key=$S3_KEY \
+              --memory-size $MEMORY_SIZE \
+              --timeout $TIMEOUT \
+              --environment Variables=$ENV_VARS
+          fi
+
+      - name: Grant API Gateway Permission to Invoke Lambda
+        run: |
+          FUNCTION_NAME="tickets-legais-lambda"
+          SOURCE_ARN="arn:aws:apigateway:us-east-1::/restapis/$API_ID/stages/prod/*/*"
+
+          aws lambda add-permission \
+            --function-name $FUNCTION_NAME \
+            --statement-id AllowAPIGatewayInvoke \
+            --action lambda:InvokeFunction \
+            --principal apigateway.amazonaws.com \
+            --source-arn $SOURCE_ARN || echo "Permission already exists"
+
+      - name: Update API Gateway Integration
+        run: |
+          FUNCTION_NAME="tickets-legais-lambda"
+          URI="arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:$ACCOUNT_ID:function:$FUNCTION_NAME/invocations"
+
+          aws api gateway put-integration \
+            --rest-api-id $API_ID \
+            --resource-id $PROXY_RESOURCE_ID \
+            --http-method ANY \
+            --type AWS_PROXY \
+            --integration-http-method POST \
+            --uri "$URI"
+
+      - name: Deploy API Gateway
+        run: |
+          aws api gateway create-deployment \
+            --rest-api-id $API_ID \
+            --stage-name prod
+
+      - name: (Opcional) Notificar sobre o Deploy
+        run: echo "Deploy da Lambda concluído com sucesso!"
