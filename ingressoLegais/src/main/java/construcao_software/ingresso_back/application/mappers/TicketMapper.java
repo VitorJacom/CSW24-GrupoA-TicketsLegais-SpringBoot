@@ -1,6 +1,5 @@
 package construcao_software.ingresso_back.application.mappers;
 
-import construcao_software.ingresso_back.application.dtos.CreateTicketDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

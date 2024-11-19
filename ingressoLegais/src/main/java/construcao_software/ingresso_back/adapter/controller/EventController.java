@@ -2,7 +2,6 @@ package construcao_software.ingresso_back.adapter.controller;
 
 import construcao_software.ingresso_back.application.dtos.EventDTO;
 import construcao_software.ingresso_back.application.services.EventService;
-import construcao_software.ingresso_back.domain.entities.EventEntity;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import lombok.RequiredArgsConstructor;
 
