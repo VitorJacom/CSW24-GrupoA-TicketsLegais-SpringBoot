@@ -19,6 +19,6 @@ variable "db_username" {
 }
 
 variable "db_password_secret_arn" {
-  description = "ARN do segredo no AWS Secrets Manager para a senha do banco de dados"
-  type        = string
+  type = string
+  description = "ARN do segredo do Secrets Manager que contém a senha do banco de dados"
 }
