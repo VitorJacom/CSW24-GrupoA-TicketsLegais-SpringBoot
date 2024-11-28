@@ -36,6 +36,8 @@ jobs:
           aws-region: us-east-1
 
       - name: Test AWS Credentials
+        run: echo ${{ secrets.AWS_ACCESS_KEY_ID }}
+        run: echo ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: aws sts get-caller-identity
 
       - name: Set up Terraform
